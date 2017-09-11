@@ -1,0 +1,62 @@
+void ST7735_uBinOut8(uint32_t n){
+
+	char outArray[6] = {' ',' ',' ','.',' ',' '};
+	int resolution = 8; //log(256)/log(2) ~~ log(resolution)/log(binary)
+	uint32_t fractionalPart = 0;
+	uint32_t intPart = 0;
+	int count = 0;
+	int bitValue = 0;
+
+	if (n < 256000) {
+		while (count < resolution){ //8 is used to isolate the rightmost 8 bits
+			bitValue = (n & (1 << count));
+			if (bitValue > 0){
+				// in worst case we could have all bits as 1
+				// then we need to add all the 1/2^m the position of that 1 to the right of binary decimal
+				// thus there could be additions of 8 fractions
+				// we could lose precision if we just consider 2 digits for each
+				// so 1/ 2^1 = 0.5
+				// so 1/ 2^2 = 0.25
+				// so 1/ 2^3 = 0.125
+				// so 1/ 2^4 = 0.0625
+				// so 1/ 2^5 = 0.03125
+				// so 1/ 2^6 = 0.015625
+				// so 1/ 2^7 = 0.0078125
+				// so 1/ 2^8 = 0.00390625
+				// assume value is 1111 1111 which should be 255/256 = 0.99609 - correct answer should be 0.99
+				// rounding - if we consider 2 digits to the right of decimal then sum is .5 + .25 + .12 + .06 + .03 + .01 = 1
+				// rounding - if we consider 3 digits to the right of decimal then sum is .5 + .25 + .12 + .06 + .03 + .01 = .997
+				// but integer division truncates
+				// trunc - if we consider 2 digits to the right of decimal then sum is 50 + 25 + 12 + 06 + 03 + 01 = 97
+				// trunc - if we consider 3 digits to the right of decimal then sum is 500 + 250 + 125 + 062 + 031 + 015  + 007 + 003 = 993
+				
+				// so we should multiply by 1000 to get 3 digits to the right of decimal and then drop off 1 digit
+				fractionalPart = fractionalPart + (1000/(1 << (8 - count))); 
+			}
+			count++;
+		}
+
+		fractionalPart = fractionalPart / 10; //drop the non-required digit
+		outArray[5] = (fractionalPart % 10) + '0'; //get the least significant digit
+		fractionalPart = fractionalPart / 10;
+		outArray[4] = (fractionalPart % 10) + '0'; //get the next least significant digit
+		outArray[3] = '.';
+		intPart = (n >> resolution);	// drop the last 2 digits which were part of the precision (right of decimal point)
+		outArray[2] = (intPart % 10) + '0'; // get the unit digit
+		intPart = intPart / 10;
+		if (intPart > 0){
+			outArray[1] = (intPart % 10) + '0'; //get the hundered digit
+		}
+		intPart = intPart / 10;
+		if (intPart > 0){
+			outArray[0] = (intPart % 10) + '0'; //get the thousand's digit
+		}
+	} 
+	else {
+		 for (int i = 0; i < 6; i++){
+				outArray[i] = '*';
+		 }
+		 outArray[3] = '.';
+	}
+	ST7735_OutString(outArray);
+}; 
