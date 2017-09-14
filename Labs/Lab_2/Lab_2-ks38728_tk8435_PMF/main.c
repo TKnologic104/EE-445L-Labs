@@ -124,8 +124,8 @@ int main(void){
 		
 	DisableInterrupts();
 		
-//		CalculateJitter();
-//		Pause();
+		CalculateJitter();
+		Pause();
 //		CalculatePMF();
 //		DrawPMF();
 		
@@ -148,10 +148,14 @@ void CalculateJitter(void){
 	}
 	jitter = largestTimeDiff - smallestTimeDiff;
 	ResetScreen();
-	char* jitterText = "jitter: ";
+	char* interruptText = "One interrupt: "; 
+	char* jitterText = "jitter =  ";
 	ST7735_SetCursor(1,1);
-	ST7735_OutString(jitterText);
+	ST7735_DrawString(1, 2, interruptText, ST7735_WHITE);
+	ST7735_DrawString(1, 3, jitterText, ST7735_WHITE);
 	
+	ST7735_SetCursor(10,3);
+
 	char jitterArr[4] = {0};
 
 		jitter = jitter / 10;

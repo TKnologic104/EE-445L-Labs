@@ -101,6 +101,7 @@ Section Cross References
     st7735.o(i.setAddrWindow) refers to st7735.o(.data) for ColStart
     main.o(i.CalculateJitter) refers to main.o(i.ResetScreen) for ResetScreen
     main.o(i.CalculateJitter) refers to st7735.o(i.ST7735_SetCursor) for ST7735_SetCursor
+    main.o(i.CalculateJitter) refers to st7735.o(i.ST7735_DrawString) for ST7735_DrawString
     main.o(i.CalculateJitter) refers to st7735.o(i.ST7735_OutString) for ST7735_OutString
     main.o(i.CalculateJitter) refers to main.o(.bss) for timeStamps
     main.o(i.CalculateJitter) refers to main.o(.data) for jitter
@@ -112,7 +113,6 @@ Section Cross References
     main.o(i.CalculateYAxis) refers to main.o(.data) for pmfMinY
     main.o(i.DrawPMF) refers to main.o(i.ResetScreen) for ResetScreen
     main.o(i.DrawPMF) refers to st7735.o(i.ST7735_PlotBar) for ST7735_PlotBar
-    main.o(i.DrawPMF) refers to st7735.o(i.ST7735_PlotNext) for ST7735_PlotNext
     main.o(i.DrawPMF) refers to main.o(.data) for pmfMinX
     main.o(i.DrawPMF) refers to main.o(.bss) for adcValues
     main.o(i.Pause) refers to main.o(i.DelayWait10ms) for DelayWait10ms
@@ -121,12 +121,17 @@ Section Cross References
     main.o(i.ResetScreen) refers to st7735.o(i.ST7735_SetCursor) for ST7735_SetCursor
     main.o(i.Timer0A_Handler) refers to adcswtrigger.o(i.ADC0_InSeq3) for ADC0_InSeq3
     main.o(i.Timer0A_Handler) refers to main.o(.data) for ADCvalue
+    main.o(i.Timer0A_Handler) refers to main.o(.bss) for timeStamps
     main.o(i.Timer0A_Init100HzInt) refers to startup.o(.text) for DisableInterrupts
     main.o(i.main) refers to pll.o(i.PLL_Init) for PLL_Init
     main.o(i.main) refers to adcswtrigger.o(i.ADC0_InitSWTriggerSeq3_Ch9) for ADC0_InitSWTriggerSeq3_Ch9
     main.o(i.main) refers to main.o(i.Timer0A_Init100HzInt) for Timer0A_Init100HzInt
     main.o(i.main) refers to main.o(i.PortF_Init) for PortF_Init
+    main.o(i.main) refers to timer1.o(i.Timer1_Init) for Timer1_Init
     main.o(i.main) refers to startup.o(.text) for EnableInterrupts
+    main.o(i.main) refers to main.o(i.CalculateJitter) for CalculateJitter
+    main.o(i.main) refers to main.o(i.Pause) for Pause
+    main.o(i.main) refers to main.o(.data) for currIndex
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry10a.o(.ARM.Collect$$$$0000000D) for __rt_final_cpp
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry11a.o(.ARM.Collect$$$$0000000F) for __rt_final_exit
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry7b.o(.ARM.Collect$$$$00000008) for _main_clock
@@ -149,7 +154,6 @@ Section Cross References
 Removing Unused input sections from the image.
 
     Removing startup.o(HEAP), (0 bytes).
-    Removing st7735.o(i.Delay1ms), (32 bytes).
     Removing st7735.o(i.Output_Clear), (10 bytes).
     Removing st7735.o(i.Output_Color), (12 bytes).
     Removing st7735.o(i.Output_Init), (16 bytes).
@@ -158,18 +162,10 @@ Removing Unused input sections from the image.
     Removing st7735.o(i.ST7735_Color565), (24 bytes).
     Removing st7735.o(i.ST7735_DrawBitmap), (288 bytes).
     Removing st7735.o(i.ST7735_DrawChar), (268 bytes).
-    Removing st7735.o(i.ST7735_DrawCharS), (244 bytes).
     Removing st7735.o(i.ST7735_DrawFastHLine), (124 bytes).
     Removing st7735.o(i.ST7735_DrawFastVLine), (124 bytes).
-    Removing st7735.o(i.ST7735_DrawPixel), (72 bytes).
-    Removing st7735.o(i.ST7735_DrawString), (86 bytes).
-    Removing st7735.o(i.ST7735_FillRect), (172 bytes).
-    Removing st7735.o(i.ST7735_FillScreen), (36 bytes).
     Removing st7735.o(i.ST7735_InitB), (40 bytes).
-    Removing st7735.o(i.ST7735_InitR), (124 bytes).
     Removing st7735.o(i.ST7735_InvertDisplay), (22 bytes).
-    Removing st7735.o(i.ST7735_OutChar), (212 bytes).
-    Removing st7735.o(i.ST7735_OutString), (24 bytes).
     Removing st7735.o(i.ST7735_OutUDec), (140 bytes).
     Removing st7735.o(i.ST7735_PlotBar), (88 bytes).
     Removing st7735.o(i.ST7735_PlotClear), (92 bytes).
@@ -179,36 +175,21 @@ Removing Unused input sections from the image.
     Removing st7735.o(i.ST7735_PlotPoint), (152 bytes).
     Removing st7735.o(i.ST7735_PlotPoints), (172 bytes).
     Removing st7735.o(i.ST7735_PlotdBfs), (60 bytes).
-    Removing st7735.o(i.ST7735_SetCursor), (32 bytes).
     Removing st7735.o(i.ST7735_SetRotation), (212 bytes).
     Removing st7735.o(i.ST7735_SetTextColor), (12 bytes).
     Removing st7735.o(i.ST7735_SwapColor), (18 bytes).
-    Removing st7735.o(i.commandList), (86 bytes).
-    Removing st7735.o(i.commonInit), (388 bytes).
     Removing st7735.o(i.ferror), (8 bytes).
     Removing st7735.o(i.fgetc), (6 bytes).
     Removing st7735.o(i.fillmessage), (72 bytes).
     Removing st7735.o(i.fputc), (16 bytes).
-    Removing st7735.o(i.pushColor), (18 bytes).
-    Removing st7735.o(i.setAddrWindow), (116 bytes).
-    Removing st7735.o(i.writecommand), (48 bytes).
-    Removing st7735.o(i.writedata), (32 bytes).
     Removing st7735.o(.bss), (12 bytes).
-    Removing st7735.o(.constdata), (2018 bytes).
-    Removing st7735.o(.data), (44 bytes).
-    Removing timer1.o(i.Timer1_Init), (48 bytes).
     Removing timer1.o(.data), (4 bytes).
-    Removing main.o(i.CalculateJitter), (228 bytes).
     Removing main.o(i.CalculatePMF), (12 bytes).
     Removing main.o(i.CalculateXAxis), (92 bytes).
     Removing main.o(i.CalculateYAxis), (132 bytes).
-    Removing main.o(i.DelayWait10ms), (32 bytes).
-    Removing main.o(i.DrawPMF), (68 bytes).
-    Removing main.o(i.Pause), (40 bytes).
-    Removing main.o(i.ResetScreen), (24 bytes).
-    Removing main.o(.bss), (24384 bytes).
+    Removing main.o(i.DrawPMF), (64 bytes).
 
-59 unused section(s) (total 31212 bytes) removed from the image.
+35 unused section(s) (total 2668 bytes) removed from the image.
 
 ==============================================================================
 
@@ -219,19 +200,19 @@ Image Symbol Table
     Symbol Name                              Value     Ov Type        Size  Object(Section)
 
     RESET                                    0x00000000   Section      644  startup.o(RESET)
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
     ADCSWTrigger.c                           0x00000000   Number         0  adcswtrigger.o ABSOLUTE
     PLL.c                                    0x00000000   Number         0  pll.o ABSOLUTE
     ST7735.c                                 0x00000000   Number         0  st7735.o ABSOLUTE
@@ -255,18 +236,60 @@ Image Symbol Table
     .text                                    0x000002b4   Section       36  init.o(.text)
     i.ADC0_InSeq3                            0x000002d8   Section        0  adcswtrigger.o(i.ADC0_InSeq3)
     i.ADC0_InitSWTriggerSeq3_Ch9             0x00000304   Section        0  adcswtrigger.o(i.ADC0_InitSWTriggerSeq3_Ch9)
-    i.PLL_Init                               0x000003f0   Section        0  pll.o(i.PLL_Init)
-    i.PortF_Init                             0x0000046c   Section        0  main.o(i.PortF_Init)
-    i.Timer0A_Handler                        0x000004bc   Section        0  main.o(i.Timer0A_Handler)
-    i.Timer0A_Init100HzInt                   0x000004fc   Section        0  main.o(i.Timer0A_Init100HzInt)
-    i.Timer1A_Handler                        0x00000574   Section        0  timer1.o(i.Timer1A_Handler)
-    i.__scatterload_copy                     0x00000580   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x0000058e   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x00000590   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i.main                                   0x000005a0   Section        0  main.o(i.main)
-    .data                                    0x20000000   Section       28  main.o(.data)
-    STACK                                    0x20000020   Section     1024  startup.o(STACK)
-    StackMem                                 0x20000020   Data           0  startup.o(STACK)
+    i.CalculateJitter                        0x000003f0   Section        0  main.o(i.CalculateJitter)
+    i.Delay1ms                               0x00000508   Section        0  st7735.o(i.Delay1ms)
+    i.DelayWait10ms                          0x00000528   Section        0  main.o(i.DelayWait10ms)
+    i.PLL_Init                               0x00000548   Section        0  pll.o(i.PLL_Init)
+    i.Pause                                  0x000005c4   Section        0  main.o(i.Pause)
+    i.PortF_Init                             0x000005ec   Section        0  main.o(i.PortF_Init)
+    i.ResetScreen                            0x0000063c   Section        0  main.o(i.ResetScreen)
+    i.ST7735_DrawCharS                       0x00000654   Section        0  st7735.o(i.ST7735_DrawCharS)
+    i.ST7735_DrawPixel                       0x00000748   Section        0  st7735.o(i.ST7735_DrawPixel)
+    i.ST7735_DrawString                      0x00000790   Section        0  st7735.o(i.ST7735_DrawString)
+    i.ST7735_FillRect                        0x000007e8   Section        0  st7735.o(i.ST7735_FillRect)
+    i.ST7735_FillScreen                      0x00000894   Section        0  st7735.o(i.ST7735_FillScreen)
+    i.ST7735_InitR                           0x000008b8   Section        0  st7735.o(i.ST7735_InitR)
+    i.ST7735_OutChar                         0x00000934   Section        0  st7735.o(i.ST7735_OutChar)
+    i.ST7735_OutString                       0x00000a08   Section        0  st7735.o(i.ST7735_OutString)
+    i.ST7735_SetCursor                       0x00000a20   Section        0  st7735.o(i.ST7735_SetCursor)
+    i.Timer0A_Handler                        0x00000a40   Section        0  main.o(i.Timer0A_Handler)
+    i.Timer0A_Init100HzInt                   0x00000ac0   Section        0  main.o(i.Timer0A_Init100HzInt)
+    i.Timer1A_Handler                        0x00000b38   Section        0  timer1.o(i.Timer1A_Handler)
+    i.Timer1_Init                            0x00000b44   Section        0  timer1.o(i.Timer1_Init)
+    i.__scatterload_copy                     0x00000b74   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x00000b82   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x00000b84   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i.commandList                            0x00000b92   Section        0  st7735.o(i.commandList)
+    commandList                              0x00000b93   Thumb Code    86  st7735.o(i.commandList)
+    i.commonInit                             0x00000be8   Section        0  st7735.o(i.commonInit)
+    commonInit                               0x00000be9   Thumb Code   340  st7735.o(i.commonInit)
+    i.main                                   0x00000d6c   Section        0  main.o(i.main)
+    i.pushColor                              0x00000dc8   Section        0  st7735.o(i.pushColor)
+    pushColor                                0x00000dc9   Thumb Code    18  st7735.o(i.pushColor)
+    i.setAddrWindow                          0x00000ddc   Section        0  st7735.o(i.setAddrWindow)
+    setAddrWindow                            0x00000ddd   Thumb Code   106  st7735.o(i.setAddrWindow)
+    i.writecommand                           0x00000e50   Section        0  st7735.o(i.writecommand)
+    writecommand                             0x00000e51   Thumb Code    40  st7735.o(i.writecommand)
+    i.writedata                              0x00000e80   Section        0  st7735.o(i.writedata)
+    writedata                                0x00000e81   Thumb Code    24  st7735.o(i.writedata)
+    .constdata                               0x00000ea0   Section     2018  st7735.o(.constdata)
+    Font                                     0x00000ea0   Data        1275  st7735.o(.constdata)
+    Bcmd                                     0x0000139b   Data         103  st7735.o(.constdata)
+    Rcmd1                                    0x00001402   Data          59  st7735.o(.constdata)
+    Rcmd2green                               0x0000143d   Data          13  st7735.o(.constdata)
+    Rcmd2red                                 0x0000144a   Data          13  st7735.o(.constdata)
+    Rcmd3                                    0x00001457   Data          43  st7735.o(.constdata)
+    .data                                    0x20000000   Section       44  st7735.o(.data)
+    _width                                   0x2000000a   Data           2  st7735.o(.data)
+    _height                                  0x2000000c   Data           2  st7735.o(.data)
+    ColStart                                 0x20000014   Data           1  st7735.o(.data)
+    RowStart                                 0x20000015   Data           1  st7735.o(.data)
+    Rotation                                 0x20000016   Data           1  st7735.o(.data)
+    TabColor                                 0x20000017   Data           1  st7735.o(.data)
+    .data                                    0x2000002c   Section       28  main.o(.data)
+    .bss                                     0x20000048   Section    24384  main.o(.bss)
+    STACK                                    0x20005f88   Section     1024  startup.o(STACK)
+    StackMem                                 0x20005f88   Data           0  startup.o(STACK)
 
     Global Symbols
 
@@ -420,25 +443,53 @@ Image Symbol Table
     __scatterload_rt2                        0x000002b5   Thumb Code     0  init.o(.text)
     ADC0_InSeq3                              0x000002d9   Thumb Code    36  adcswtrigger.o(i.ADC0_InSeq3)
     ADC0_InitSWTriggerSeq3_Ch9               0x00000305   Thumb Code   206  adcswtrigger.o(i.ADC0_InitSWTriggerSeq3_Ch9)
-    PLL_Init                                 0x000003f1   Thumb Code   118  pll.o(i.PLL_Init)
-    PortF_Init                               0x0000046d   Thumb Code    68  main.o(i.PortF_Init)
-    Timer0A_Handler                          0x000004bd   Thumb Code    52  main.o(i.Timer0A_Handler)
-    Timer0A_Init100HzInt                     0x000004fd   Thumb Code    98  main.o(i.Timer0A_Init100HzInt)
-    Timer1A_Handler                          0x00000575   Thumb Code     8  timer1.o(i.Timer1A_Handler)
-    __scatterload_copy                       0x00000581   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x0000058f   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x00000591   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    main                                     0x000005a1   Thumb Code    50  main.o(i.main)
-    Region$$Table$$Base                      0x000005dc   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x000005fc   Number         0  anon$$obj.o(Region$$Table)
-    currIndex                                0x20000000   Data           4  main.o(.data)
-    jitter                                   0x20000004   Data           4  main.o(.data)
-    pmfMinX                                  0x20000008   Data           4  main.o(.data)
-    pmfMaxX                                  0x2000000c   Data           4  main.o(.data)
-    pmfMinY                                  0x20000010   Data           4  main.o(.data)
-    pmfMaxY                                  0x20000014   Data           4  main.o(.data)
-    ADCvalue                                 0x20000018   Data           4  main.o(.data)
-    __initial_sp                             0x20000420   Data           0  startup.o(STACK)
+    CalculateJitter                          0x000003f1   Thumb Code   244  main.o(i.CalculateJitter)
+    Delay1ms                                 0x00000509   Thumb Code    32  st7735.o(i.Delay1ms)
+    DelayWait10ms                            0x00000529   Thumb Code    32  main.o(i.DelayWait10ms)
+    PLL_Init                                 0x00000549   Thumb Code   118  pll.o(i.PLL_Init)
+    Pause                                    0x000005c5   Thumb Code    36  main.o(i.Pause)
+    PortF_Init                               0x000005ed   Thumb Code    68  main.o(i.PortF_Init)
+    ResetScreen                              0x0000063d   Thumb Code    24  main.o(i.ResetScreen)
+    ST7735_DrawCharS                         0x00000655   Thumb Code   232  st7735.o(i.ST7735_DrawCharS)
+    ST7735_DrawPixel                         0x00000749   Thumb Code    64  st7735.o(i.ST7735_DrawPixel)
+    ST7735_DrawString                        0x00000791   Thumb Code    86  st7735.o(i.ST7735_DrawString)
+    ST7735_FillRect                          0x000007e9   Thumb Code   164  st7735.o(i.ST7735_FillRect)
+    ST7735_FillScreen                        0x00000895   Thumb Code    28  st7735.o(i.ST7735_FillScreen)
+    ST7735_InitR                             0x000008b9   Thumb Code    90  st7735.o(i.ST7735_InitR)
+    ST7735_OutChar                           0x00000935   Thumb Code   176  st7735.o(i.ST7735_OutChar)
+    ST7735_OutString                         0x00000a09   Thumb Code    24  st7735.o(i.ST7735_OutString)
+    ST7735_SetCursor                         0x00000a21   Thumb Code    22  st7735.o(i.ST7735_SetCursor)
+    Timer0A_Handler                          0x00000a41   Thumb Code   100  main.o(i.Timer0A_Handler)
+    Timer0A_Init100HzInt                     0x00000ac1   Thumb Code    98  main.o(i.Timer0A_Init100HzInt)
+    Timer1A_Handler                          0x00000b39   Thumb Code     8  timer1.o(i.Timer1A_Handler)
+    Timer1_Init                              0x00000b45   Thumb Code    40  timer1.o(i.Timer1_Init)
+    __scatterload_copy                       0x00000b75   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x00000b83   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x00000b85   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    main                                     0x00000d6d   Thumb Code    78  main.o(i.main)
+    dBfs                                     0x00001482   Data         512  st7735.o(.constdata)
+    Region$$Table$$Base                      0x00001684   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x000016a4   Number         0  anon$$obj.o(Region$$Table)
+    StX                                      0x20000000   Data           4  st7735.o(.data)
+    StY                                      0x20000004   Data           4  st7735.o(.data)
+    StTextColor                              0x20000008   Data           2  st7735.o(.data)
+    lastj                                    0x20000010   Data           4  st7735.o(.data)
+    Messageindex                             0x20000018   Data           4  st7735.o(.data)
+    Ymax                                     0x2000001c   Data           4  st7735.o(.data)
+    Ymin                                     0x20000020   Data           4  st7735.o(.data)
+    X                                        0x20000024   Data           4  st7735.o(.data)
+    Yrange                                   0x20000028   Data           4  st7735.o(.data)
+    currIndex                                0x2000002c   Data           4  main.o(.data)
+    jitter                                   0x20000030   Data           4  main.o(.data)
+    pmfMinX                                  0x20000034   Data           4  main.o(.data)
+    pmfMaxX                                  0x20000038   Data           4  main.o(.data)
+    pmfMinY                                  0x2000003c   Data           4  main.o(.data)
+    pmfMaxY                                  0x20000040   Data           4  main.o(.data)
+    ADCvalue                                 0x20000044   Data           4  main.o(.data)
+    timeStamps                               0x20000048   Data        4000  main.o(.bss)
+    adcValues                                0x20000fe8   Data        4000  main.o(.bss)
+    pmf                                      0x20001f88   Data       16384  main.o(.bss)
+    __initial_sp                             0x20006388   Data           0  startup.o(STACK)
 
 
 
@@ -448,9 +499,9 @@ Memory Map of the image
 
   Image Entry point : 0x0000026d
 
-  Load Region LR_1 (Base: 0x00000000, Size: 0x00000618, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x00000000, Size: 0x000016ec, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Base: 0x00000000, Size: 0x000005fc, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Base: 0x00000000, Size: 0x000016a4, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -468,32 +519,57 @@ Memory Map of the image
     0x000002b4   0x00000024   Code   RO          451    .text               mc_w.l(init.o)
     0x000002d8   0x0000002c   Code   RO           12    i.ADC0_InSeq3       adcswtrigger.o
     0x00000304   0x000000ec   Code   RO           13    i.ADC0_InitSWTriggerSeq3_Ch9  adcswtrigger.o
-    0x000003f0   0x0000007c   Code   RO           37    i.PLL_Init          pll.o
-    0x0000046c   0x00000050   Code   RO          356    i.PortF_Init        main.o
-    0x000004bc   0x00000040   Code   RO          358    i.Timer0A_Handler   main.o
-    0x000004fc   0x00000078   Code   RO          359    i.Timer0A_Init100HzInt  main.o
-    0x00000574   0x0000000c   Code   RO          328    i.Timer1A_Handler   timer1.o
-    0x00000580   0x0000000e   Code   RO          455    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x0000058e   0x00000002   Code   RO          456    i.__scatterload_null  mc_w.l(handlers.o)
-    0x00000590   0x0000000e   Code   RO          457    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x0000059e   0x00000002   PAD
-    0x000005a0   0x0000003c   Code   RO          360    i.main              main.o
-    0x000005dc   0x00000020   Data   RO          453    Region$$Table       anon$$obj.o
+    0x000003f0   0x00000118   Code   RO          349    i.CalculateJitter   main.o
+    0x00000508   0x00000020   Code   RO           52    i.Delay1ms          st7735.o
+    0x00000528   0x00000020   Code   RO          353    i.DelayWait10ms     main.o
+    0x00000548   0x0000007c   Code   RO           37    i.PLL_Init          pll.o
+    0x000005c4   0x00000028   Code   RO          355    i.Pause             main.o
+    0x000005ec   0x00000050   Code   RO          356    i.PortF_Init        main.o
+    0x0000063c   0x00000018   Code   RO          357    i.ResetScreen       main.o
+    0x00000654   0x000000f4   Code   RO           61    i.ST7735_DrawCharS  st7735.o
+    0x00000748   0x00000048   Code   RO           64    i.ST7735_DrawPixel  st7735.o
+    0x00000790   0x00000056   Code   RO           65    i.ST7735_DrawString  st7735.o
+    0x000007e6   0x00000002   PAD
+    0x000007e8   0x000000ac   Code   RO           66    i.ST7735_FillRect   st7735.o
+    0x00000894   0x00000024   Code   RO           67    i.ST7735_FillScreen  st7735.o
+    0x000008b8   0x0000007c   Code   RO           69    i.ST7735_InitR      st7735.o
+    0x00000934   0x000000d4   Code   RO           71    i.ST7735_OutChar    st7735.o
+    0x00000a08   0x00000018   Code   RO           72    i.ST7735_OutString  st7735.o
+    0x00000a20   0x00000020   Code   RO           82    i.ST7735_SetCursor  st7735.o
+    0x00000a40   0x00000080   Code   RO          358    i.Timer0A_Handler   main.o
+    0x00000ac0   0x00000078   Code   RO          359    i.Timer0A_Init100HzInt  main.o
+    0x00000b38   0x0000000c   Code   RO          328    i.Timer1A_Handler   timer1.o
+    0x00000b44   0x00000030   Code   RO          329    i.Timer1_Init       timer1.o
+    0x00000b74   0x0000000e   Code   RO          455    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x00000b82   0x00000002   Code   RO          456    i.__scatterload_null  mc_w.l(handlers.o)
+    0x00000b84   0x0000000e   Code   RO          457    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x00000b92   0x00000056   Code   RO           86    i.commandList       st7735.o
+    0x00000be8   0x00000184   Code   RO           87    i.commonInit        st7735.o
+    0x00000d6c   0x0000005c   Code   RO          360    i.main              main.o
+    0x00000dc8   0x00000012   Code   RO           92    i.pushColor         st7735.o
+    0x00000dda   0x00000002   PAD
+    0x00000ddc   0x00000074   Code   RO           93    i.setAddrWindow     st7735.o
+    0x00000e50   0x00000030   Code   RO           94    i.writecommand      st7735.o
+    0x00000e80   0x00000020   Code   RO           95    i.writedata         st7735.o
+    0x00000ea0   0x000007e2   Data   RO           97    .constdata          st7735.o
+    0x00001682   0x00000002   PAD
+    0x00001684   0x00000020   Data   RO          453    Region$$Table       anon$$obj.o
 
 
-    Execution Region ER_RW (Base: 0x20000000, Size: 0x0000001c, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RW (Base: 0x20000000, Size: 0x00000048, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x0000001c   Data   RW          362    .data               main.o
+    0x20000000   0x0000002c   Data   RW           98    .data               st7735.o
+    0x2000002c   0x0000001c   Data   RW          362    .data               main.o
 
 
-    Execution Region ER_ZI (Base: 0x2000001c, Size: 0x00000404, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Base: 0x20000048, Size: 0x00006340, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x2000001c   0x00000004   PAD
-    0x20000020   0x00000400   Zero   RW            1    STACK               startup.o
+    0x20000048   0x00005f40   Zero   RW          361    .bss                main.o
+    0x20005f88   0x00000400   Zero   RW            1    STACK               startup.o
 
 
 ==============================================================================
@@ -503,16 +579,17 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       280         38          0          0          0       5175   adcswtrigger.o
-       324         56          0         28          0       2890   main.o
-       124          6          0          0          0        459   pll.o
-       672        622          0          0       1024        980   startup.o
-        12          4          0          0          0        402   timer1.o
+       280         38          0          0          0       5151   adcswtrigger.o
+       796        116          0         28      24384       4894   main.o
+       124          6          0          0          0        447   pll.o
+      1722        190       2018         44          0      12766   st7735.o
+       672        622          0          0       1024        956   startup.o
+        60         12          0          0          0        788   timer1.o
 
     ----------------------------------------------------------------------
-      1412        726         32         28       1028       9906   Object Totals
+      3658        984       2052         72      25408      25002   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-         0          0          0          0          4          0   (incl. Padding)
+         4          0          2          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -530,8 +607,8 @@ Image component sizes
         36          8          0          0          0         68   init.o
 
     ----------------------------------------------------------------------
-        88         16          0          0          0         68   Library Totals
-         2          0          0          0          0          0   (incl. Padding)
+        86         16          0          0          0         68   Library Totals
+         0          0          0          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -540,7 +617,7 @@ Image component sizes
         86         16          0          0          0         68   mc_w.l
 
     ----------------------------------------------------------------------
-        88         16          0          0          0         68   Library Totals
+        86         16          0          0          0         68   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -549,15 +626,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      1500        742         32         28       1028       9662   Grand Totals
-      1500        742         32         28       1028       9662   ELF Image Totals
-      1500        742         32         28          0          0   ROM Totals
+      3744       1000       2052         72      25408      23718   Grand Totals
+      3744       1000       2052         72      25408      23718   ELF Image Totals
+      3744       1000       2052         72          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 1532 (   1.50kB)
-    Total RW  Size (RW Data + ZI Data)              1056 (   1.03kB)
-    Total ROM Size (Code + RO Data + RW Data)       1560 (   1.52kB)
+    Total RO  Size (Code + RO Data)                 5796 (   5.66kB)
+    Total RW  Size (RW Data + ZI Data)             25480 (  24.88kB)
+    Total ROM Size (Code + RO Data + RW Data)       5868 (   5.73kB)
 
 ==============================================================================
 
