@@ -31,9 +31,12 @@
 #include "PLL.h"
 #include "Timer1.h"
 #include "ST7735.h"
+#include "stdio.h"
 
 #define PF2             (*((volatile uint32_t *)0x40025010))
 #define PF1             (*((volatile uint32_t *)0x40025008))
+#define PF4   (*((volatile uint32_t *)0x40025040))
+
 #define PMF_MAX_SIZE 4096
 #define ARR_SIZE 1000
 void DisableInterrupts(void); // Disable interrupts
@@ -48,11 +51,13 @@ void CalculateYAxis(void);
 void DrawPMF(void);
 void ResetScreen(void);
 void PortF_Init(void);
+void Pause(void);
+void DelayWait10ms(uint32_t n);
+void ST7735_OutNum(char *ptr);
 
 
 
-//***********TODO: do we need to use volatile?***********
-
+/****** Global Variables *******/
 volatile uint32_t ADCvalue;
 uint32_t timeStamps[ARR_SIZE] = {0};
 uint32_t adcValues[ARR_SIZE] = {0};
@@ -63,7 +68,6 @@ uint32_t pmfMinX = 0;
 uint32_t pmfMaxX = 0;
 uint32_t pmfMinY = 0;
 uint32_t pmfMaxY = 0;
-uint32_t calculating = 1;
 
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
@@ -109,21 +113,22 @@ int main(void){
   Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
 	PortF_Init();	
 	Timer1_Init();
-	ResetScreen();
-
 
   EnableInterrupts();
 	
 	while(1){
 		
 		while(currIndex < ARR_SIZE){
-			PF1 ^= 0x02;  // toggles when running in main
+	PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
 		}
-		DisableInterrupts();
+		
+	DisableInterrupts();
 		
 		CalculateJitter();
-		CalculatePMF();
-		DrawPMF();	
+		Pause();
+//		CalculatePMF();
+//		DrawPMF();
+		
 	}
 }
 
@@ -141,7 +146,25 @@ void CalculateJitter(void){
 			largestTimeDiff = delta;
 		}	
 	}
-	jitter = smallestTimeDiff - largestTimeDiff;
+	jitter = largestTimeDiff - smallestTimeDiff;
+	ResetScreen();
+	char* interruptText = "One interrupt: "; 
+	char* jitterText = "jitter =  ";
+	ST7735_SetCursor(1,1);
+	ST7735_DrawString(1, 2, interruptText, ST7735_WHITE);
+	ST7735_DrawString(1, 3, jitterText, ST7735_WHITE);
+	
+	ST7735_SetCursor(10,3);
+
+	char jitterArr[4] = {0};
+
+		jitter = jitter / 10;
+		jitterArr[2] = (jitter % 10) + '0';
+		jitter = jitter / 10;
+		jitterArr[1] = (jitter % 10) + '0';
+		jitter = jitter / 10;
+		jitterArr[0] = (jitter % 10) + '0';
+	ST7735_OutString(jitterArr);
 }
 
 void CalculatePMF(void){
@@ -179,19 +202,22 @@ void CalculateYAxis(void){
 	}
 }
 
+/**** NEEDS WORK *****/
 void DrawPMF(void){
+		ResetScreen();
 	for(uint32_t x = pmfMinX; x<pmfMaxX; x++){
 		if(adcValues[x] != 0){
-			ST7735_DrawFastVLine(adcValues[x], 20, pmf[adcValues[x]], ST7735_WHITE);
+			ST7735_PlotBar(pmf[adcValues[x]]);
+//			ST7735_DrawFastVLine(adcValues[x], 20, pmf[adcValues[x]], ST7735_WHITE);
 		}
+		//ST7735_PlotNext();
 	}
-	calculating = 0;
 }
 
 void ResetScreen(void){
 	ST7735_InitR(INITR_REDTAB);
 	ST7735_FillScreen(ST7735_BLACK); 
-  ST7735_SetCursor(0,0);
+        ST7735_SetCursor(0,0);
 }
 
 void PortF_Init(void){
@@ -203,3 +229,36 @@ void PortF_Init(void){
   GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
   PF2 = 0;                      // turn off LED
 }
+
+/*******Name: Pause**********
+// Description: Used to check if PF4, which is connected to switch 1, 
+                has been pressed or not. 
+// Inputs: None
+// Outputs: None
+// Notes: This function was provided to us.
+************************************/
+void Pause(void){
+  while(PF4==0x00){ 
+    DelayWait10ms(10);
+  }
+  while(PF4==0x10){
+    DelayWait10ms(10);
+  }
+}
+/*******Name: DelayWait10ms**********
+// Description: Subroutine to wait 10 msec
+// Inputs: None
+// Outputs: None
+// Notes: This function was provided to us
+************************************/
+void DelayWait10ms(uint32_t n){
+	uint32_t volatile time;
+  while(n){
+    time = 727240*2/91;  // 10msec
+    while(time){
+	  	time--;
+    }
+    n--;
+  }
+}
+
