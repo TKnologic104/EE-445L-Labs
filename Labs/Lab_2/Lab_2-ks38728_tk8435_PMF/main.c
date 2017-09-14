@@ -119,7 +119,7 @@ int main(void){
 	while(1){
 		
 		while(currIndex < ARR_SIZE){
-			PF1 ^= 0x02;  // toggles when running in main
+	PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
 		}
 		
 	DisableInterrupts();
