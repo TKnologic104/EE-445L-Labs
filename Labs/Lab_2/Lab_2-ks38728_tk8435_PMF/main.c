@@ -99,11 +99,11 @@ void Timer0A_Handler(void){
   ADCvalue = ADC0_InSeq3();
 	PF2 ^= 0x04;                   // profile
 
-//	if(currIndex < ARR_SIZE){
-//		timeStamps[currIndex] = TIMER1_TAR_R;
-//		adcValues[currIndex] = ADCvalue;
-//		currIndex ++;
-//	}
+	if(currIndex < ARR_SIZE){
+		timeStamps[currIndex] = TIMER1_TAR_R;
+		adcValues[currIndex] = ADCvalue;
+		currIndex ++;
+	}
 }
 int main(void){
   PLL_Init(Bus80MHz);                   // 80 MHz
@@ -112,19 +112,17 @@ int main(void){
   ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
   Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
 	PortF_Init();	
-//	Timer1_Init();
+	Timer1_Init();
 
   EnableInterrupts();
 	
 	while(1){
 		
-//		while(currIndex < ARR_SIZE){
-//			PF1 ^= 0x02;  // toggles when running in main
-//		}
+		while(currIndex < ARR_SIZE){
 			PF1 ^= 0x02;  // toggles when running in main
-
+		}
 		
-//	DisableInterrupts();
+	DisableInterrupts();
 		
 //		CalculateJitter();
 //		Pause();
@@ -150,21 +148,19 @@ void CalculateJitter(void){
 	}
 	jitter = largestTimeDiff - smallestTimeDiff;
 	ResetScreen();
-	char* jitterVal = "jitter: ";
+	char* jitterText = "jitter: ";
 	ST7735_SetCursor(1,1);
-	ST7735_OutString(jitterVal);
+	ST7735_OutString(jitterText);
 	
-	char arr[4] = {0};
+	char jitterArr[4] = {0};
 
 		jitter = jitter / 10;
-		arr[2] = (jitter % 10) + '0';
+		jitterArr[2] = (jitter % 10) + '0';
 		jitter = jitter / 10;
-		arr[1] = (jitter % 10) + '0';
+		jitterArr[1] = (jitter % 10) + '0';
 		jitter = jitter / 10;
-		arr[0] = (jitter % 10) + '0';
-
-	
-	ST7735_OutString(arr);
+		jitterArr[0] = (jitter % 10) + '0';
+	ST7735_OutString(jitterArr);
 }
 
 void CalculatePMF(void){
@@ -202,6 +198,7 @@ void CalculateYAxis(void){
 	}
 }
 
+/**** NEEDS WORK *****/
 void DrawPMF(void){
 		ResetScreen();
 	for(uint32_t x = pmfMinX; x<pmfMaxX; x++){
@@ -209,14 +206,14 @@ void DrawPMF(void){
 			ST7735_PlotBar(pmf[adcValues[x]]);
 //			ST7735_DrawFastVLine(adcValues[x], 20, pmf[adcValues[x]], ST7735_WHITE);
 		}
-		ST7735_PlotNext();
+		//ST7735_PlotNext();
 	}
 }
 
 void ResetScreen(void){
 	ST7735_InitR(INITR_REDTAB);
 	ST7735_FillScreen(ST7735_BLACK); 
-  ST7735_SetCursor(0,0);
+        ST7735_SetCursor(0,0);
 }
 
 void PortF_Init(void){
