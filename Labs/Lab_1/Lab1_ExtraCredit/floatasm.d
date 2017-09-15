@@ -1,1 +1,0 @@
-.\floatasm.o: floatasm.s
