@@ -115,10 +115,6 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
-          <Key>DLGUARM</Key>
-        </SetRegEntry>
-        <SetRegEntry>
-          <Number>0</Number>
           <Key>DLGDARM</Key>
           <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)(9108=349,44,514,266,1)(9106=-1,-1,-1,-1,0)(9104=-1,-1,-1,-1,0)(9107=501,155,954,426,1)(9102=884,166,1280,440,1)</Name>
         </SetRegEntry>
@@ -176,7 +172,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\Mac\Google Drive\UT\17 - FALL\EE445L\Labs_git\EE-445L-Labs\Labs\Lab_2\Lab_2-ks38728_tk8435_PMF\\Mac\Google Drive\UT\17 - FALL\EE445L\Labs_git\EE-445L-Labs\Labs\Lab_2\Lab_2-ks38728_tk8435_PMF\main.c</Filename>
+          <Filename>C:\Mac\Google Drive\UT\17 - FALL\EE445L\Labs_git\EE-445L-Labs\Labs\Lab_2\Lab_2-ks38728_tk8435_PMF\Mac\Google Drive\UT\17 - FALL\EE445L\Labs_git\EE-445L-Labs\Labs\Lab_2\Lab_2-ks38728_tk8435_PMF\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\ADCSWTrigger\/Mac/Google Drive/UT/17 - FALL/EE445L/Labs_git/EE-445L-Labs/Labs/Lab_2/Lab_2-ks38728_tk8435_PMF/main.c\152</Expression>
         </Bp>
@@ -313,7 +309,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>272</TopLine>
+      <TopLine>276</TopLine>
       <CurrentLine>277</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup.s</PathWithFileName>
@@ -327,10 +323,10 @@
       <FileType>1</FileType>
       <tvExp>1</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>54</ColumnNumber>
+      <ColumnNumber>13</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>65</CurrentLine>
+      <TopLine>72</TopLine>
+      <CurrentLine>92</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\ADCSWTrigger.c</PathWithFileName>
       <FilenameWithoutPath>ADCSWTrigger.c</FilenameWithoutPath>
