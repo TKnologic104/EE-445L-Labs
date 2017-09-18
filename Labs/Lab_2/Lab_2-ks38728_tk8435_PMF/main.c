@@ -1,10 +1,12 @@
-// ADCTestMain.c
-// Runs on TM4C123
-// This program periodically samples ADC channel 0 and stores the
-// result to a global variable that can be accessed with the JTAG
-// debugger and viewed with the variable watch feature.
-// Daniel Valvano
-// September 5, 2015
+/********* main.c **************
+ Author: Tarang Khandpur, Karime Saad
+ Description: Main program to test Lab 2 Fall 2017
+ Date: September 17, 2017
+ 
+ Runs on TM4C123
+ Uses ST7735.c LCD.
+ 
+********************************/
 
 /* This example accompanies the book
    "Embedded Systems: Real Time Interfacing to Arm Cortex M Microcontrollers",
@@ -41,6 +43,8 @@
 #define ARR_SIZE 1000
 #define SCREEN_WIDTH 128
 
+/**** Function Declaration ****/
+
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
@@ -58,8 +62,12 @@ void ST7735_OutNum(char *ptr);
 void DisplayJitter(void);
 void ClearPMF(void);
 void Timer3A_Init10KHzInt(void);         
-void SysTick_Init(void);             // initialize SysTick timer
+void SysTick_Init(void);       // initialize SysTick timer
 void SysTick_Wait(uint32_t delay);
+void SysTick_Disable(void);
+void Timer3A_Disable(void);
+void Timer0A_Init100HzInt(void);
+void Timer0A_Handler(void);
 
 
 /****** Global Variables *******/
@@ -76,88 +84,40 @@ uint32_t pmfMaxX = 0;
 uint32_t pmfMinY = 0;
 uint32_t pmfMaxY = 0;
 uint32_t pmfMidRangeX = 0;
+uint32_t testCase = 1;
+uint32_t testCount = 1;
 
 
-// This debug function initializes Timer0A to request interrupts
-// at a 100 Hz frequency.  It is similar to FreqMeasure.c.
-void Timer0A_Init100HzInt(void){
-  volatile uint32_t delay;
-  DisableInterrupts();
-  // **** general initialization ****
-  SYSCTL_RCGCTIMER_R |= 0x01;      // activate timer0
-  delay = SYSCTL_RCGCTIMER_R;      // allow time to finish activating
-  TIMER0_CTL_R &= ~TIMER_CTL_TAEN; // disable timer0A during setup
-  TIMER0_CFG_R = 0;                // configure for 32-bit timer mode
-  // **** timer0A initialization ****
-                                   // configure for periodic mode
-  TIMER0_TAMR_R = TIMER_TAMR_TAMR_PERIOD;
-  TIMER0_TAILR_R = 799999;         // start value for 100 Hz interrupts
-//	  TIMER0_TAILR_R = 799999/10;         // start value for 1000 Hz interrupts
-  TIMER0_IMR_R |= TIMER_IMR_TATOIM;// enable timeout (rollover) interrupt
-  TIMER0_ICR_R = TIMER_ICR_TATOCINT;// clear timer0A timeout flag
-  TIMER0_CTL_R |= TIMER_CTL_TAEN;  // enable timer0A 32-b, periodic, interrupts
-  // **** interrupt initialization ****
-                                   // Timer0A=priority 2
-	NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000; // top 3 bits
-  NVIC_EN0_R = 1<<19;              // enable interrupt 19 in NVIC
-}
-
-void Timer0A_Handler(void){
-  TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
-  PF2 ^= 0x04;                   // profile
-  PF2 ^= 0x04;                   // profile
-	
-  ADCvalue = ADC0_InSeq3();
-	PF2 ^= 0x04;                   // profile
-
-	if(currIndex < ARR_SIZE){
-		adcValues[currIndex] = ADCvalue;
-		timeStamps[currIndex] = TIMER1_TAR_R;
-		currIndex++;
-	}
-}
 int main(void){
   PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
   ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
 	PortF_Init();	
-	Timer1_Init();
-	
-	//Initialize Periodic Interrupts 
+	Timer1_Init();												// System Clock timer
 	Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
-	//Timer2_Init();
-	Timer3A_Init10KHzInt();               // set up Timer1A for 10K Hz but without interrupts
-	SysTick_Init();             // initialize SysTick timer
 	
-	ResetScreenWhite();
+/******* Periodic Interrupts Init *******/
+//	SysTick_Init();
+//	SysTick_Wait(7999);
+//	Timer3A_Init10KHzInt();
 	
 	while(1){
-		
-		// Systick section
-		// delay is in units of 12.5 ns for 80 MHz
-		// to wait 100 micro sec delay = 100 micro sec/ 12.ns = 100 * 10^-6 / 12.5 * 10-9 = 8 * 10^3 = 8000 
-		// so for 99 microsec it is 7999		
-		SysTick_Wait(7999);      // approximately 99 micro sec
-		
+
 		EnableInterrupts();
 		while(currIndex < ARR_SIZE){
-//	PF1 ^= 0x02;
-//		PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
+			PF1 ^= 0x02;
+			PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
 		}
-		
-//	DisableInterrupts();
-		
+				
 		ResetScreenBlack();
 		CalculateJitter();
 		DisplayJitter();
 	  DelayWait10ms(2000);
-
-		ResetScreenWhite();
-		CalculatePMF();
-		DrawPMF();
-	  DelayWait10ms(1000);
-		currIndex=0;
-
+		currIndex = 0;
+//		ResetScreenWhite();
+//		CalculatePMF();
+//		DrawPMF();
+//	  DelayWait10ms(1000);
 	}
 }
 
@@ -166,7 +126,7 @@ void CalculateJitter(void){
 	largestTimeDiff = timeStamps[0] - timeStamps[1];
 	int32_t delta = 0;
 
-	for(uint32_t i=1; i<ARR_SIZE - 1; i++){
+	for(uint32_t i=2; i<ARR_SIZE - 1; i++){
 		delta = timeStamps[i - 1] - timeStamps[i];
 		if(delta < smallestTimeDiff){
 			smallestTimeDiff = delta;
@@ -180,8 +140,6 @@ void CalculateJitter(void){
 
 void DisplayJitter(void){
 	ST7735_SetCursor(1,1);
-	ST7735_OutString("Three interrupts with\n divide instruction:\n");
-	ST7735_SetCursor(1,4);
 	ST7735_OutString("jitter = ");
 	ST7735_OutUDec(jitter);
 }
@@ -242,9 +200,8 @@ void PortF_Init(void){
                                         // configure PF2 as GPIO
   GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFF00F)+0x00000000;
   GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
-	GPIO_PORTF_PUR_R |= 0x10;         // 5) pullup for PF4
 
-  PF2 = 0;                      // turn off LED
+  PF2 = 0;                     				  // turn off LED
 }
 
 /*******Name: Pause**********
@@ -281,7 +238,6 @@ void DelayWait10ms(uint32_t n){
 }
 
 
-
 /****** Periodic Interrupts *******/
 
 void Timer3A_Init10KHzInt(void){
@@ -290,17 +246,17 @@ void Timer3A_Init10KHzInt(void){
   // ** general initialization **
   SYSCTL_RCGCTIMER_R |= 0x08;      // activate timer3
   delay = SYSCTL_RCGCTIMER_R;      // allow time to finish activating
-  TIMER3_CTL_R &= ~TIMER_CTL_TAEN; // disable timer1A during setup
+  TIMER3_CTL_R &= ~TIMER_CTL_TAEN; // disable timer3A during setup
   TIMER3_CFG_R = 0;                // configure for 32-bit timer mode
-  // ** timer2A initialization **
+  // ** timer3A initialization **
   TIMER3_TAMR_R = TIMER_TAMR_TAMR_PERIOD; // configure for periodic mode, down count
 
   TIMER3_TAILR_R = 8000 - 3;         // start value for 10,000 Hz interrupts; 80mhz / 10khz = 8000
 	
   TIMER3_TAPR_R = 0;         // bus clock resolution
   TIMER3_IMR_R |= TIMER_IMR_TATOIM;// enable timeout (rollover) interrupt
-  TIMER3_ICR_R = TIMER_ICR_TATOCINT;// clear timer1A timeout flag
-  TIMER3_CTL_R |= TIMER_CTL_TAEN;  // enable timer1A 32-b, periodic
+  TIMER3_ICR_R = TIMER_ICR_TATOCINT;// clear timer3A timeout flag
+  TIMER3_CTL_R |= TIMER_CTL_TAEN;  // enable timer3A 32-b, periodic
 
   // ** interrupt initialization **
 // see table 9.1 of old book, 5.1 of new book
@@ -308,10 +264,13 @@ void Timer3A_Init10KHzInt(void){
   NVIC_EN1_R = 1<<(35-32);  // enable interrupt 35 in NVIC. 
 	//NVIC_EN0_R bit 31-0 control IRQ 31-0; NVIC_EN1_R bit 15-0 control ira 47-32
 	// timer3a_handler has irq 35 and use 31-29 bits in NVIC_PRI8_R to control the priority
-
 }
 void Timer3A_Handler(void){
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer3A timeout
+}
+
+void Timer3A_Disable(void){
+	TIMER3_CTL_R &= ~TIMER_CTL_TAEN;
 }
 
 
@@ -324,6 +283,10 @@ void SysTick_Init(void){
   NVIC_ST_CURRENT_R = 0;                // any write to current clears it
 	NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R & 0x00FFFFFF) | 0x20000000; //priority 1 bits 31-29 , 0x4 will priority 2
   NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN; // enable SysTick with core clock
+}
+
+void SysTick_Disable(void){
+	NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
 }
 
 void SysTick_Handler(void){
@@ -347,4 +310,43 @@ void SysTick_Wait10ms(uint32_t delay){
   for(i=0; i<delay; i++){
     SysTick_Wait(500000);  // wait 10ms (assumes 50 MHz clock)
   }
+}
+
+// This debug function initializes Timer0A to request interrupts
+// at a 100 Hz frequency.  It is similar to FreqMeasure.c.
+void Timer0A_Init100HzInt(void){
+  volatile uint32_t delay;
+  DisableInterrupts();
+  // **** general initialization ****
+  SYSCTL_RCGCTIMER_R |= 0x01;      // activate timer0
+  delay = SYSCTL_RCGCTIMER_R;      // allow time to finish activating
+  TIMER0_CTL_R &= ~TIMER_CTL_TAEN; // disable timer0A during setup
+  TIMER0_CFG_R = 0;                // configure for 32-bit timer mode
+  // **** timer0A initialization ****
+                                   // configure for periodic mode
+  TIMER0_TAMR_R = TIMER_TAMR_TAMR_PERIOD;
+  TIMER0_TAILR_R = 799999;         // start value for 100 Hz interrupts
+//	  TIMER0_TAILR_R = 799999/10;         // start value for 1000 Hz interrupts
+  TIMER0_IMR_R |= TIMER_IMR_TATOIM;// enable timeout (rollover) interrupt
+  TIMER0_ICR_R = TIMER_ICR_TATOCINT;// clear timer0A timeout flag
+  TIMER0_CTL_R |= TIMER_CTL_TAEN;  // enable timer0A 32-b, periodic, interrupts
+  // **** interrupt initialization ****
+                                   // Timer0A=priority 2
+	NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000; // top 3 bits
+  NVIC_EN0_R = 1<<19;              // enable interrupt 19 in NVIC
+}
+
+void Timer0A_Handler(void){
+  TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
+  PF2 ^= 0x04;                   // profile
+  PF2 ^= 0x04;                   // profile
+	
+  ADCvalue = ADC0_InSeq3();
+	PF2 ^= 0x04;                   // profile
+
+	if(currIndex < ARR_SIZE){
+		adcValues[currIndex] = ADCvalue;
+		timeStamps[currIndex] = TIMER1_TAR_R;
+		currIndex++;
+	}
 }
