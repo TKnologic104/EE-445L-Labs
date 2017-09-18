@@ -445,6 +445,11 @@
               <FileType>1</FileType>
               <FilePath>.\Timer2.c</FilePath>
             </File>
+            <File>
+              <FileName>Title.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Title.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
