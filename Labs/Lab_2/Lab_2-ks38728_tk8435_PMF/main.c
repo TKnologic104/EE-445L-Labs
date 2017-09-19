@@ -104,16 +104,20 @@ int main(void){
 	while(1){
 
 		EnableInterrupts();
+				ResetScreenBlack();
+
 		while(currIndex < ARR_SIZE){
 			PF1 ^= 0x02;
 			PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
+
 		}
-				
-		ResetScreenBlack();
-		CalculateJitter();
-		DisplayJitter();
-	  DelayWait10ms(2000);
+		CalculatePMF();
+		DrawPMF();
 		currIndex = 0;
+//		CalculateJitter();
+//		DisplayJitter();
+//	  DelayWait10ms(2000);
+//		currIndex = 0;
 //		ResetScreenWhite();
 //		CalculatePMF();
 //		DrawPMF();
