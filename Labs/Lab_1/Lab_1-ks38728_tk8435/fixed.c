@@ -451,26 +451,28 @@ const uint16_t Logo[] = {
 void ST7735_sDecOut3(int32_t n){
 	int digs[4] = {0,0,0,0};
 	int count = 0;
-	if ((n <= 9999) && (n >= -9999)) { //checks to see if number is in valid range
+	if ((n <= 9999) && (n >= -9999)) {
 		if (n >= 0){
-			ST7735_OutChar(' '); //outputs a space if input is positive
+			ST7735_OutChar(' ');
 		}
 		else {
-			ST7735_OutChar('-'); //outputs a "-" if input is negative
-			n = n * (-1); //converts the negative to positive
+			ST7735_OutChar('-');
+			n = n * (-1);
 		}
+		//gets lowest value digit ex: 123, digs[0] = 3, digs[1] = 2, digs[2] = 1
+		//removes lowest value digit, ex: 123 -> 12, 12 -> 1, 1 -> 0
 		while (n > 0){
-			digs[count] = n%10; //gets lowest value digit ex: 123, digs[0] = 3, digs[1] = 2, digs[2] = 1
-			n = n / 10; //removes lowest value digit, ex: 123 -> 12, 12 -> 1, 1 -> 0
+			digs[count] = n%10;
+			n = n / 10; 
 			count++;
 		}
 		
 		//print the answer to screen in appropriate order
-		count = 3; //starting from the highest value in the array 
+		count = 3; 
 		while (count >= 0){
 			ST7735_OutChar(digs[count] + '0'); //+0 is to get the correct ascii code for a digit. This also prints the last number in the dig[].
 			if (count == 3){
-				ST7735_OutChar('.'); //prints the '.' after the first digit is output
+				ST7735_OutChar('.'); 
 			}
 			count--;
 		}
@@ -520,45 +522,25 @@ void ST7735_uBinOut8(uint32_t n){
 		while (count < resolution){ //8 is used to isolate the rightmost 8 bits
 			bitValue = (n & (1 << count));
 			if (bitValue > 0){
-				// in worst case we could have all bits as 1
-				// then we need to add all the 1/2^m the position of that 1 to the right of binary decimal
-				// thus there could be additions of 8 fractions
-				// we could lose precision if we just consider 2 digits for each
-				// so 1/ 2^1 = 0.5
-				// so 1/ 2^2 = 0.25
-				// so 1/ 2^3 = 0.125
-				// so 1/ 2^4 = 0.0625
-				// so 1/ 2^5 = 0.03125
-				// so 1/ 2^6 = 0.015625
-				// so 1/ 2^7 = 0.0078125
-				// so 1/ 2^8 = 0.00390625
-				// assume value is 1111 1111 which should be 255/256 = 0.99609 - correct answer should be 0.99
-				// rounding - if we consider 2 digits to the right of decimal then sum is .5 + .25 + .12 + .06 + .03 + .01 = 1
-				// rounding - if we consider 3 digits to the right of decimal then sum is .5 + .25 + .12 + .06 + .03 + .01 = .997
-				// but integer division truncates
-				// trunc - if we consider 2 digits to the right of decimal then sum is 50 + 25 + 12 + 06 + 03 + 01 = 97
-				// trunc - if we consider 3 digits to the right of decimal then sum is 500 + 250 + 125 + 062 + 031 + 015  + 007 + 003 = 993
-				
-				// so we should multiply by 1000 to get 3 digits to the right of decimal and then drop off 1 digit
 				fractionalPart = fractionalPart + (1000/(1 << (8 - count))); 
 			}
 			count++;
 		}
 
-		fractionalPart = fractionalPart / 10; //drop the non-required digit
-		outArray[5] = (fractionalPart % 10) + '0'; //get the least significant digit
 		fractionalPart = fractionalPart / 10;
-		outArray[4] = (fractionalPart % 10) + '0'; //get the next least significant digit
+		outArray[5] = (fractionalPart % 10) + '0';
+		fractionalPart = fractionalPart / 10;
+		outArray[4] = (fractionalPart % 10) + '0';
 		outArray[3] = '.';
-		intPart = (n >> resolution);	// drop the last 2 digits which were part of the precision (right of decimal point)
-		outArray[2] = (intPart % 10) + '0'; // get the unit digit
+		intPart = (n >> resolution);
+		outArray[2] = (intPart % 10) + '0';
 		intPart = intPart / 10;
 		if (intPart > 0){
-			outArray[1] = (intPart % 10) + '0'; //get the hundered digit
+			outArray[1] = (intPart % 10) + '0';
 		}
 		intPart = intPart / 10;
 		if (intPart > 0){
-			outArray[0] = (intPart % 10) + '0'; //get the thousand's digit
+			outArray[0] = (intPart % 10) + '0';
 		}
 	} 
 	else {
@@ -599,7 +581,7 @@ void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, in
 		
 		//scale input - mulitplied by 1000 since resolution is .001
 		xScale = 1000*((maxX - minX)/(plotWidth));
-		yScale = 1000*((maxY - minY)/(plotHeight*(-1))); //multiplied by -1 because plotHeight was determined with 160 being less than 32 based upon cartesian viewpoint of LCD (160 is below 32 on the screen)
+		yScale = 1000*((maxY - minY)/(plotHeight*(-1)));
 		
 		//offset - used to find center of screen
 		xOffset = plotMaxX - ((1000*maxX)/xScale); //maxX is mulitplied by 1000 to counter the resolution in xScale

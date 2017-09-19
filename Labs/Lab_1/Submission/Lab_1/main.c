@@ -103,7 +103,9 @@ int main(void){uint32_t i;
 		//Tests ST7735_sDecOut3
 		ST7735_FillScreen(ST7735_BLACK); 
     ST7735_SetCursor(0,0);
-    printf("Lab 1\rST7735_sDecOut3\r");
+    //printf("Lab 1\rST7735_sDecOut3\r");
+		char *decOutTitle = "Lab 1\rST7735_sDecOut3\r";
+		ST7735_OutString(decOutTitle);
     for(i=0; i<13; i++){
       ST7735_sDecOut3(outTests1[i].InNumber);  // your solution
       ST7735_OutString((char*)outTests1[i].OutBuffer); // expected solution
@@ -113,7 +115,9 @@ int main(void){uint32_t i;
 		//Tests ST7735_uBinOut8
     ST7735_FillScreen(0);  // set screen to black
     ST7735_SetCursor(0,0);
-    printf("ST7735_uBinOut8\r");
+    //printf("ST7735_uBinOut8\r");
+		char *binOutTitle = "ST7735_uBinOut8\r";
+		ST7735_OutString(binOutTitle);
     for(i=0; i<14; i++){
       ST7735_uBinOut8(outTests2[i].InNumber);  // your solution
       ST7735_OutString((char*)outTests2[i].OutBuffer); // expected solution
