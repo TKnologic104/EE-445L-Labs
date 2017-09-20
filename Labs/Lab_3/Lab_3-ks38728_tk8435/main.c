@@ -52,18 +52,14 @@ void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
-void CalculateJitter(void);
-void CalculatePMF(void);
-void DrawPMF(void);
+
 void ResetScreenBlack(void);
 void ResetScreenWhite(void);
 void PortF_Init(void);
 void Pause(void);
 void DelayWait10ms(uint32_t n);
 void ST7735_OutNum(char *ptr);
-void DisplayJitter(void);
-void ClearPMF(void);
-void DetermineTestCase(void);
+
 void Timer3A_Init10KHzInt(void);         
 void SysTick_Init(void);       // initialize SysTick timer
 void SysTick_Wait(uint32_t delay);
@@ -77,213 +73,24 @@ void DrawClockFace(void);
 
 
 /****** Global Variables *******/
-volatile uint32_t ADCvalue;
-uint32_t timeStamps[ARR_SIZE];
-uint32_t adcValues[ARR_SIZE];
-uint32_t currIndex = 0;
-int32_t smallestTimeDiff = 0;
-int32_t largestTimeDiff = 0;
-uint32_t jitter = 0;
-uint32_t pmf[PMF_MAX_SIZE];
-int32_t pmfMinX = 0;
-uint32_t pmfMaxX = 0;
-uint32_t pmfMinY = 0;
-uint32_t pmfMaxY = 0;
-uint32_t pmfMidRangeX = 0;
-uint32_t testCase = 6;
-uint32_t testCount = 5;
-uint32_t displayTitle = 1;
+
 
 
 int main(void){
 	
   PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
-  ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
 	PortF_Init();	
 	Timer1_Init();												// System Clock timer
 	Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
 	
+	ResetScreenBlack();
+	
 	while(1){	
-//		EnableInterrupts();
-//		while(currIndex < ARR_SIZE){
-//			PF1 ^= 0x02;
-//			if (testCase % 2 == 0){
-//				PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
-//			}
-//		}
-				
-		ResetScreenBlack();
-//		CalculateJitter();
-//		DisplayJitter();
-//	  DelayWait10ms(2000);
 
-//		ResetScreenWhite();
-//		CalculatePMF();
-//		DrawPMF();
-//	  DelayWait10ms(1000);
-		DetermineTestCase();
 	}
 }
 
-/*******Name: CalculateJitter**********
-// Description: Calculates the largest difference between the timestamps
-								of each interrupt and saves it as "Jitter"
-// Inputs: None
-// Outputs: None
-************************************/	
-void CalculateJitter(void){
-	if (displayTitle == 1){
-		TitleScreen("Lab 2", "-Don't Interrupt", "Tarang", "Khandpur", "Karime", "Saad");
-		displayTitle = 0;
-		DelayWait10ms(1000);
-		ST7735_FillScreen(ST7735_BLACK);
-	}
-	smallestTimeDiff = timeStamps[0] - timeStamps[1];
-	largestTimeDiff = timeStamps[0] - timeStamps[1];
-	int32_t delta = 0;
-
-	for(uint32_t i=2; i<ARR_SIZE - 1; i++){
-		delta = timeStamps[i - 1] - timeStamps[i];
-		if(delta < smallestTimeDiff){
-			smallestTimeDiff = delta;
-		}
-		if(delta > largestTimeDiff){
-			largestTimeDiff = delta;
-		}	
-	}
-	jitter = largestTimeDiff - smallestTimeDiff;
-}
-
-/**************Name: DisplayJitter ***************
- Author: Karime Saad, Tarang Khandpur
- Description: Determines which test case is
-							being calculated and prints the 
-							appropriate description.
- Inputs:  none
- Outputs: Prints the Jitter Value out to the screen. Along
-					with the current test case.
-*/
-void DisplayJitter(void){
-	ST7735_SetCursor(1,1);
-	char *output;
-	switch (testCase){
-		case 1:
-			output = "One Interrupt w/o"; break;
-		case 2:
-			output = "One Interrupt with"; break;
-		case 3:
-			output = "Two Interrupts w/o"; break;
-		case 4:
-			output = "Two Interrupts with"; break;
-		case 5:
-			output = "Three Interrupts w/o"; break;
-		case 6:
-			output = "Three Interrupts with"; break;
-		}
-	ST7735_OutString(output);
-	ST7735_SetCursor(1,2);
-	output = "Jitter Line";
-	ST7735_OutString(output);
-	ST7735_SetCursor(1,3);
-	output = "Test Count :";
-	ST7735_OutString(output);
-	ST7735_OutUDec(testCount);
-	ST7735_SetCursor(1,4);
-	ST7735_OutString("jitter = ");
-	ST7735_OutUDec(jitter);
-}
-
-/**************Name: CalculatePMF***************
- Author: Karime Saad, Tarang Khandpur
- Description: Calculates the PMF using the values
-							in the adcValues[] and determines the 
-							central point for the histogram
- Inputs:  none
- Outputs: none
-*/
-
-void CalculatePMF(void){
-
-//Add occurence of ADC value 
-	pmfMinY = pmf[adcValues[0]];
-	pmfMaxY = pmf[adcValues[0]];
-
-	for(uint32_t i=0; i<ARR_SIZE; i++){
-		pmf[adcValues[i]] += 1;
-
-		if(pmf[adcValues[i]] < pmfMinY){
-			pmfMinY = pmf[adcValues[i]];
-		}
-		if(pmf[adcValues[i]] > pmfMaxY){
-			pmfMaxY = pmf[adcValues[i]];
-			pmfMinX = adcValues[i] - SCREEN_WIDTH/2; // center value 
-			if(pmfMinX > 4096){
-				pmfMinX = 0;
-			}
-		}
-	}
-}
-
-/**************Name: DrawPMF***************
- Author: Karime Saad, Tarang Khandpur
- Description: Plots the values determined in 
-							CalculatePMF, and fits
-							the range on the parameters
-							of the LCD.
- Inputs:  none
- Outputs: none
-*/
-void DrawPMF(void){
-		ST7735_PlotClear(pmfMinY, pmfMaxY);
-		for(int i = pmfMinX; i < pmfMinX + SCREEN_WIDTH; i++){
-		ST7735_PlotBar(pmf[i]); 
-		ST7735_PlotNext();
-	}
-}
-
-/**************Name: DetermineTestCase***************
- Author: Karime Saad, Tarang Khandpur
- Description: Determines which test case is currently
-							being executed and assigns values
-							to perform the correct calulation
-							and print.
- Inputs: none
- Outputs: none
-*/
-void DetermineTestCase(void){
-	DrawSlantedLine(10);
-				DrawClockFace();
-				DrawClockFace();
-//	if (testCount >= 1){ //change this value for number of times each test is run.
-//			testCount = 1;
-//			testCase++;
-//			if (testCase > 6) {
-//				DrawSlantedLine(10);
-//				DrawClockFace();
-//				DrawClockFace();
-//				SysTick_Disable();
-//				Timer3A_Disable();
-//				testCase = 1;
-//			}
-//		}
-//		else {
-//			testCount++;
-//		}
-//		
-//	if ((testCase == 1) || (testCase == 2)){
-//		currIndex=0;  // only 1 interrupt timer0 active
-//	}
-//	if ((testCase == 3) || (testCase == 4)){
-//		SysTick_Init(); // 2 interrupts active
-//		SysTick_Wait(7999);
-//		currIndex=0;
-//	}
-//	if ((testCase == 5) || (testCase == 6)){
-//		Timer3A_Init10KHzInt();  // 3 interrupts active
-//		currIndex=0;
-//	}
-}
 
 /**************Name: ResetScreenBlack***************
  Author: Karime Saad, Tarang Khandpur
