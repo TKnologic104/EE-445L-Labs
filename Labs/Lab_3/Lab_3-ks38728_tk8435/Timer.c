@@ -1,4 +1,3 @@
-
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
@@ -23,7 +22,6 @@ void Timer0A_Handler(void);
 
 
 #define PF2   (*((volatile uint32_t *)0x40025010))
-
 
 
 void Timer3A_Init10KHzInt(void){
@@ -132,10 +130,6 @@ void Timer0A_Handler(void){
 
 }
 	
-	
-	
-void (*PeriodicTask)(void);   // user function
-
 // ***************** TIMER1_Init ****************
 // Activate TIMER1 interrupts to run user task periodically
 // Inputs:  task is a pointer to a user function

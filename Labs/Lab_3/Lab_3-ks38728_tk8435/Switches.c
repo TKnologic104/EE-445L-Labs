@@ -1,3 +1,9 @@
+#include <stdint.h>
+#include "../inc/tm4c123gh6pm.h"
+#include "ST7735.h"
+#include "stdio.h"
+
+#define PF2   (*((volatile uint32_t *)0x40025010))
 
 void PortF_Init(void){
 	GPIO_PORTF_DIR_R |= 0x06;             // make PF2, PF1 out (built-in LED)
