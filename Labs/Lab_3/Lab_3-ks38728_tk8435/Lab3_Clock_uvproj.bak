@@ -450,26 +450,6 @@
               <FileType>1</FileType>
               <FilePath>.\Title.c</FilePath>
             </File>
-            <File>
-              <FileName>Timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Timer.c</FilePath>
-            </File>
-            <File>
-              <FileName>Speaker.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Speaker.c</FilePath>
-            </File>
-            <File>
-              <FileName>LCD.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LCD.c</FilePath>
-            </File>
-            <File>
-              <FileName>Switches.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Switches.c</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>
