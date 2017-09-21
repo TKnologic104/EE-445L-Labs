@@ -63,14 +63,9 @@ void ST7735_OutNum(char *ptr);
 int main(void){
 	
   PLL_Init(Bus80MHz);                   // 80 MHz
-	PortF_Init();
 
-	
-	
-	Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
 	ResetScreenBlack();
 	
-	Timer1_Init();												// System Clock timer
 	PortD_Init(); //Initialize Speaker
 	PortF_Init(); //Initialize Switches
 	
@@ -80,11 +75,5 @@ int main(void){
 	}
 }
 
-void PortF_Init(void){
-	SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
-  while((SYSCTL_PRGPIO_R & 0x00000020) == 0){};
-  GPIO_PORTF_DIR_R |= 0x0E;     // PF3,PF2,PF1 outputs
-  GPIO_PORTF_DEN_R |= 0x0E;     // enable digital I/O on PF3,PF2,PF1  
-}
 
 

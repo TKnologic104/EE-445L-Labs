@@ -431,19 +431,9 @@
               <FilePath>.\ST7735.h</FilePath>
             </File>
             <File>
-              <FileName>Timer1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Timer1.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>Timer2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Timer2.c</FilePath>
             </File>
             <File>
               <FileName>Title.c</FileName>
