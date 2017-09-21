@@ -56,12 +56,14 @@ void ST7735_OutNum(char *ptr);
 
 /****** Global Variables *******/
 
+
 int main(void){
 	
   PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
 	Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
-	ResetScreenBlack();
+	
+	DrawBackground();
 	
 	Timer1_Init();												// System Clock timer
 	PortD_Init(); //Initialize Speaker

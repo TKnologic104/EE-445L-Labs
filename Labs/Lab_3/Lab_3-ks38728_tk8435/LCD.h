@@ -46,8 +46,12 @@ void DrawClockFace(void);
 //****** DESCRIBE THESE BELOW *************//
 float minuteToRadian(uint32_t minute);
 
-uint32_t XpolarToCoor(float theta);
+uint32_t XpolarToCoor(uint32_t radius, float theta);
 
-uint32_t YpolarToCoor(float theta);
+uint32_t YpolarToCoor(uint32_t radius, float theta);
 
 void DrawMinuteHand(uint32_t minute);
+
+void ResetScreenBackground(uint16_t BackgroundColor);
+
+void DrawBackground(void);

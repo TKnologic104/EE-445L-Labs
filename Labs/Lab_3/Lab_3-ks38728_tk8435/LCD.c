@@ -18,15 +18,35 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,uint16_t col
 void DrawClockFace(void);
 float minuteToRadian(uint32_t minute);
 
-uint32_t XpolarToCoor(float theta);
+uint32_t XpolarToCoor(uint32_t radius, float theta);
 
-uint32_t YpolarToCoor(float theta);
+uint32_t YpolarToCoor(uint32_t radius, float theta);
 
 void DrawMinuteHand(uint32_t minute);
 
+void ResetScreenBackground(uint16_t BackgroundColor);
+
+void DrawBackground(void);
+
+
 
 /******Global Variables******/
+uint32_t Xcoor = 0;
+uint32_t Ycoor = 0;
+uint16_t BackgroundColor = ST7735_WHITE;
 
+
+
+
+void ResetScreenBackground(uint16_t BackgroundColor){
+	ST7735_InitR(INITR_REDTAB);
+	ST7735_FillScreen(BackgroundColor); 
+  ST7735_SetCursor(0,0);	
+}
+
+void DrawBackground(void){
+	ResetScreenBackground(BackgroundColor);
+}
 
 /**************Name: ResetScreenBlack***************
  Author: Karime Saad, Tarang Khandpur
@@ -110,39 +130,37 @@ void DrawClockFace(void){
 }
 
 void DrawMinuteHand(uint32_t minute){
-	uint32_t Xcoor;
-	uint32_t Ycoor;
 	if (minute > 59){
-		printf("error"); // temp error catch
+		ST7735_OutString("error"); // temp error catch
 	}
-	Xcoor = XpolarToCoor(minuteToRadian(minute));
-	Ycoor = YpolarToCoor(minuteToRadian(minute));
-	//i need a draw line function which takes 2 points
-	//what is each input?
+ 	ST7735_Line (OriginX,OriginY,Xcoor,Ycoor, BackgroundColor);
+
+	Xcoor = XpolarToCoor(RADIUS, minuteToRadian(minute));
+	Ycoor = YpolarToCoor(RADIUS, minuteToRadian(minute));
+	
 	ST7735_Line (OriginX,OriginY,Xcoor,Ycoor, ST7735_BLUE);
 }
 
 float minuteToRadian(uint32_t minute){
-	uint32_t degree;
+	float degree;
 	float radians;
-	float theta;
 	
-	degree = minute*6;
-	radians = ((float)degree)/(180.0*(22.0/7.0));
-	theta = ((22.0/7.0)/2.0) - radians;
+	degree = 90.0 - (float)minute*6.0;
+	radians = ((degree)*(3.142857))/180.0;
 	
-	return (theta);
+	return (radians);
 }
 
-uint32_t XpolarToCoor(float theta){
-	float tempX = RADIUS*cos(theta);
+uint32_t XpolarToCoor(uint32_t radius, float theta){
+	float tempX = radius*cos(theta);
 	tempX += OriginX;
 	return ((uint32_t)tempX);
 }	
 
-uint32_t YpolarToCoor(float theta){
-	float tempY = RADIUS*sin(theta);
+uint32_t YpolarToCoor(uint32_t radius, float theta){
+	float tempY = radius*sin(theta);
 	tempY = OriginY - tempY;
 	return ((uint32_t)tempY);
 }	
+
 

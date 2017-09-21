@@ -1625,25 +1625,39 @@ void Output_Color(uint32_t newColor){ // Set color of future output
 //               159 is near the wires, 0 is the side opposite the wires
 //        color 16-bit color, which can be produced by ST7735_Color565() 
 // Output: none
-void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,uint16_t color){
+void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color){
+	int16_t xlength = (int)x2 - (int)x1;
+	int16_t ylength = (int)y2 - (int)y1;
 	if (x1 == x2){
-	  ST7735_DrawFastVLine(x1, y1, y2 - y1, ST7735_BLUE);
-		return;
-	}
-	if (y1 == y2){
-	  ST7735_DrawFastHLine(x1, y1, x2 - x1, ST7735_BLUE);
+		if (ylength > 0){
+			for (int j = y1; j <= y2 ;j++){
+				ST7735_DrawPixel(x1, j, color);
+			}
+		}
+		else {
+			for (int j = y2; j <= y1 ;j++){
+				ST7735_DrawPixel(x1, j, color);
+			}
+		}
 		return;
 	}
 
-	float slope = 1.0 * (y2 - y1) / (x2 - x1);
-	float intercept = y1 - 1.0 * (slope * x1);
+	float slope = 1.0 * ((float)y2 - (float)y1) / ((float)x2 - (float)x1);
+	float intercept = (float)y1 - 1.0 * (slope * (float)x1);
 	float temp =0;
 	if (x1 > 128 || x1 > 128 || y1 > 160 || y2 > 160){
 		return;
 	}
 	uint16_t i = 0;	
 	uint16_t j = 0;	
-	if (abs(x2 - x1) >= abs(y2 - y1)){
+	if (xlength < 0){
+		xlength = -1 * xlength;
+	}
+	if (ylength < 0){
+		ylength = -1 * ylength;
+	}
+
+	if (xlength >= ylength){
 		if ( x2 >= x1){
 			for (i = x1; i <= x2 ;i++){
 				temp = 1.0 * (slope * i) + intercept;
@@ -1676,3 +1690,4 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,uint16_t col
 		}
 	}
 }
+
