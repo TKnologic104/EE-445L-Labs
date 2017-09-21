@@ -55,3 +55,5 @@ void DrawMinuteHand(uint32_t minute);
 void ResetScreenBackground(uint16_t BackgroundColor);
 
 void DrawBackground(void);
+
+void DrawHourHand(uint32_t hour, uint32_t minute);

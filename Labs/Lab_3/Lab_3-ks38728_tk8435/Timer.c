@@ -5,6 +5,7 @@
 #include "Timer2.h"
 #include "ST7735.h"
 #include "stdio.h"
+#include "LCD.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -22,6 +23,9 @@ void Timer0A_Handler(void);
 
 
 #define PF2   (*((volatile uint32_t *)0x40025010))
+	
+/******Global Variables******/
+uint32_t ThirtySecCount;
 
 
 void Timer3A_Init10KHzInt(void){
@@ -98,7 +102,9 @@ void SysTick_Wait10ms(uint32_t delay){
 
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
-void Timer0A_Init100HzInt(void){
+
+
+void Timer0A_Init30sec(void){
   volatile uint32_t delay;
   DisableInterrupts();
   // **** general initialization ****
@@ -109,25 +115,42 @@ void Timer0A_Init100HzInt(void){
   // **** timer0A initialization ****
                                    // configure for periodic mode
   TIMER0_TAMR_R = TIMER_TAMR_TAMR_PERIOD;
-  TIMER0_TAILR_R = 799999;         // start value for 100 Hz interrupts
-//	  TIMER0_TAILR_R = 799999/10;         // start value for 1000 Hz interrupts
-  TIMER0_IMR_R |= TIMER_IMR_TATOIM;// enable timeout (rollover) interrupt
+  
+	//TIMER0_TAILR_R = 2400000000-1;         // start value for 30 sec interrupts
+	TIMER0_TAILR_R = 5400000;         // start value for testing interrupts
+  
+	TIMER0_IMR_R |= TIMER_IMR_TATOIM;// enable timeout (rollover) interrupt
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;// clear timer0A timeout flag
   TIMER0_CTL_R |= TIMER_CTL_TAEN;  // enable timer0A 32-b, periodic, interrupts
   // **** interrupt initialization ****
                                    // Timer0A=priority 2
 	NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000; // top 3 bits
   NVIC_EN0_R = 1<<19;              // enable interrupt 19 in NVIC
+	
+	ThirtySecCount = 0;
 }
 
 void Timer0A_Handler(void){
 	
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
   PF2 ^= 0x04;                   // profile
-  PF2 ^= 0x04;                   // profile
-	
+  ThirtySecCount++;
 	PF2 ^= 0x04;                   // profile
+	
 
+}
+
+uint32_t checkMinute(void){
+	
+	//Testing on Simulator DELETE!
+	//DelayWait10ms(1000);
+	//ThirtySecCount++;
+	//^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	if (ThirtySecCount >= 2){
+		ThirtySecCount = 0;
+		return 1;
+	}
+	return 0;
 }
 	
 // ***************** TIMER1_Init ****************

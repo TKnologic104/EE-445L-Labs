@@ -55,22 +55,39 @@ void ST7735_OutNum(char *ptr);
 
 
 /****** Global Variables *******/
+uint32_t currentMinute = 0;
+uint32_t currentHour = 0;
+
 
 
 int main(void){
 	
   PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
-	Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
 	
-	DrawBackground();
-	
-	Timer1_Init();												// System Clock timer
+	Timer0A_Init30sec();               // set up Timer0A for 30seconds
+	//Timer1_Init();												// System Clock timer
 	PortD_Init(); //Initialize Speaker
 	PortF_Init(); //Initialize Switches
 	
-	for(int i = 0; i <59; i++){
-		DrawMinuteHand(i);
+	DrawBackground();
+	DrawMinuteHand(0);
+	DrawHourHand(0,0);
+	
+	while(1){
+		EnableInterrupts();
+		if (checkMinute() == 1){
+			currentMinute++;
+			if (currentMinute > 59){
+				currentMinute = 0;
+				currentHour++;
+				if (currentHour > 11){
+					currentHour = 0;
+				}
+			}
+			DrawMinuteHand(currentMinute);
+			DrawHourHand(currentHour, currentMinute);
+		}
 	}
 }
 

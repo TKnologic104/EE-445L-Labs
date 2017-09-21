@@ -33,9 +33,9 @@ void DrawBackground(void);
 /******Global Variables******/
 uint32_t Xcoor = 0;
 uint32_t Ycoor = 0;
+uint32_t XcoorHour = 0;
+uint32_t YcoorHour = 0;
 uint16_t BackgroundColor = ST7735_WHITE;
-
-
 
 
 void ResetScreenBackground(uint16_t BackgroundColor){
@@ -162,5 +162,27 @@ uint32_t YpolarToCoor(uint32_t radius, float theta){
 	tempY = OriginY - tempY;
 	return ((uint32_t)tempY);
 }	
+
+float hourToRadian(uint32_t hour, uint32_t minute){
+	float degree;
+	float radians;
+	
+	degree = (float)hour*30.0;
+	degree = degree + 30.0 * (float)minute * 6.0 / 360.0;
+	degree = 90.0 - degree;
+	radians = degree * 3.142857 / 180.0;
+	return (radians);
+}
+
+void DrawHourHand(uint32_t hour, uint32_t minute){	
+	ST7735_Line (OriginX,OriginY,XcoorHour,YcoorHour, BackgroundColor);
+	
+	XcoorHour = XpolarToCoor(RADIUS - 10, hourToRadian(hour, minute));
+	YcoorHour = YpolarToCoor(RADIUS - 10, hourToRadian(hour, minute));
+	
+	ST7735_Line (OriginX,OriginY,XcoorHour,YcoorHour, ST7735_BLUE);
+}
+
+
 
 

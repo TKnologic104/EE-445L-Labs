@@ -1625,7 +1625,7 @@ void Output_Color(uint32_t newColor){ // Set color of future output
 //               159 is near the wires, 0 is the side opposite the wires
 //        color 16-bit color, which can be produced by ST7735_Color565() 
 // Output: none
-void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color){
+void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,uint16_t color){
 	int16_t xlength = (int)x2 - (int)x1;
 	int16_t ylength = (int)y2 - (int)y1;
 	if (x1 == x2){
@@ -1648,8 +1648,10 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t co
 	if (x1 > 128 || x1 > 128 || y1 > 160 || y2 > 160){
 		return;
 	}
-	uint16_t i = 0;	
-	uint16_t j = 0;	
+	int16_t i = 0;	
+	int16_t j = 0;	
+	uint16_t col = 0;	
+	uint16_t row = 0;	
 	if (xlength < 0){
 		xlength = -1 * xlength;
 	}
@@ -1660,34 +1662,47 @@ void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t co
 	if (xlength >= ylength){
 		if ( x2 >= x1){
 			for (i = x1; i <= x2 ;i++){
-				temp = 1.0 * (slope * i) + intercept;
+				temp = 1.0 * (slope * (float)i) + intercept;
 				j = temp;
-				ST7735_DrawPixel(i, j, color);
+				col = i;
+				row = j;
+				ST7735_DrawPixel(col, row, color);
 			}
 		}
 		else {
 			for (i = x1; i >= x2 ;i--){
-				temp = 1.0 * (slope * i) + intercept;
+				temp = 1.0 * (slope * (float)i) + intercept;
 				j = temp;
-				ST7735_DrawPixel(i, j, color);
+				if (i < 0){
+					break;
+				}
+				col = i;
+				row = j;
+				ST7735_DrawPixel(col, row, color);
 			}
 		}
 	}
 	else {
 		if ( y2 >= y1){
 			for (j = y1; j <= y2 ;j++){
-				temp = 1.0 * (j - intercept) / slope;
+				temp = 1.0 * ((float)j - intercept) / slope;
 				i = temp;
-				ST7735_DrawPixel(i, j, color);
+				col = i;
+				row = j;
+				ST7735_DrawPixel(col, row, color);
 			}
 		}
 		else {
 			for (j = y1; j >= y2 ;j--){
-				temp = 1.0 * (j - intercept) / slope;
+				if (i < 0){
+					break;
+				}
+				temp = 1.0 * ((float)j - intercept) / slope;
 				i = temp;
-				ST7735_DrawPixel(i, j, color);
+				col = i;
+				row = j;
+				ST7735_DrawPixel(col, row, color);
 			}
 		}
 	}
 }
-
