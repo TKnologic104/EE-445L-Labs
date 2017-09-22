@@ -22,18 +22,19 @@ void Speaker_Init(void){
 
 
 void StartAlarm(void){
-	Timer1_Init();
+	//Timer1 interrupt enable
+	NVIC_EN0_R |= 1<<21;           // 9) enable IRQ 21 in NVIC
 }
 
 void StopAlarm(void){
-	PD1 = 0x00;
+	NVIC_EN0_R &= ~(1<<21);
 }
 
 
 //Should timeout every 440Hz or every 1/440 seconds
 //Need to change this line in Timer1_Init() in Timer.c:   
 //TIMER1_TAILR_R = 0xFFFFFFFF-1;    
-//	I changed it to this number, but needs verification
+//I changed it to this number, but needs verification
 //TIMER1_TAILR_R = 0x3A2E8B2D; //I think this is 1/440 = 2.7272 milliseconds
 //This will create a squarewave with a frequency of 440Hz which is A.
 

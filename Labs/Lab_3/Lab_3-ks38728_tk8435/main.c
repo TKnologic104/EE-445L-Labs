@@ -68,10 +68,15 @@ void optionsUpArrow(void);
 void optionsDownArrow(void);
 void IncrementHour(void);
 void DecrementHour(void);
-void UpdateCurrentTime(void);
+void UpdateCurrentHour(void);
 void IncrementAlarmHour(void);
 void DecrementAlarmHour(void);
 void UpdateAlarmTime(void);
+void IncrementFirstMinute(void);
+void IncrementSecondtMinute(void);
+void DecrementFirstMinute(void);
+void DecrementSecondtMinute(void);
+
 
 
 
@@ -86,6 +91,10 @@ uint32_t alarmMinute;
 uint32_t currentTime;
 uint32_t alarmTime;
 uint32_t option = 1;
+uint32_t hourSet = FALSE;
+uint32_t firstMinuteSet = FALSE;
+uint32_t secondMinuteSet = FALSE;
+
 
 
 int main(void){
@@ -93,101 +102,173 @@ int main(void){
 	//PortD_Init(); //Initialize Speaker
 	Switch_Init();
 	Speaker_Init();
+	Timer1_Init();
+
 	
 	DrawMainScreen();
 
 	while(1){
-		if(currentTime == alarmTime){
+		if(buttonPressed == 1){
 			StartAlarm();
-			while(buttonPressed!=1 | buttonPressed!=2 | buttonPressed!=3 | buttonPressed!=4){
-				//wait until alarm is turned off by pressing any button
-			}
-			//while(GPIO_PORTD_DATA_R == 0){}
+		}
+		if(buttonPressed == 2){
 			StopAlarm();
 		}
-		switch(state){
-			case MAIN_SCREEN:
-				if(buttonPressed == 4){
-					state = OPTIONS_SCREEN;
-					DrawOptionsScreen();
-				}
-				break;
-			case OPTIONS_SCREEN:
-				if(buttonPressed == 1){
-					option++;
-					if(option>3){
-						option = 1;
-					}
-					if(option<1){
-						option = 3;
-					}
-					optionsUpArrow();
-				}
-				if(buttonPressed == 2){
-					option--;
-					if(option>3){
-						option = 1;
-					}
-					if(option<1){
-						option = 3;
-					}
-					optionsDownArrow();
-				}
-				if(buttonPressed == 3){
-					state = MAIN_SCREEN;
-					DrawMainScreen();
-				}
-				if(buttonPressed == 4){
-					state = option;
-					if(state == 1){
-						DrawMainScreen();
-					}
-					if(state == 2){
-						DrawSetTimeScreen();
-					}
-					if(state == 3){
-						DrawSetAlarmScreen();
-					}
-				}
-				break;
-			case SET_TIME_SCREEN:
-				if(buttonPressed == 1){
-					IncrementHour();
-				}
-				if(buttonPressed == 2){
-					DecrementHour();
-				}
-				if(buttonPressed == 3){
-					state = OPTIONS_SCREEN;
-					DrawOptionsScreen();
-				}
-				if(buttonPressed == 4){
-					UpdateCurrentTime();
-					state = MAIN_SCREEN;
-					DrawMainScreen();
-				}
-				break;
-			case SET_ALARM_SCREEN:
-				if(buttonPressed == 1){
-					IncrementAlarmHour();
-				}
-				if(buttonPressed == 2){
-					DecrementAlarmHour();
-				}
-				if(buttonPressed == 3){
-					state = OPTIONS_SCREEN;
-					DrawOptionsScreen();
-				}
-				if(buttonPressed == 4){
-					UpdateAlarmTime();
-					state = MAIN_SCREEN;
-					DrawMainScreen();
-				}
-				break;
-			default:
-				state = MAIN_SCREEN;
-				DrawMainScreen();
-		}
+
+//		switch(state){
+//			case MAIN_SCREEN:
+//				if(buttonPressed == 4){
+//					state = OPTIONS_SCREEN;
+//					DrawOptionsScreen();
+//				}
+//				break;
+//			case OPTIONS_SCREEN:
+//				switch(buttonPressed){
+//					case 1:
+//						option++;
+//						if(option>3){
+//							option = 1;
+//						}
+//						if(option<1){
+//							option = 3;
+//						}
+//						optionsUpArrow();
+//						break;
+//					case 2:
+//						option--;
+//						if(option>3){
+//							option = 1;
+//						}
+//						if(option<1){
+//							option = 3;
+//						}
+//						optionsDownArrow();
+//						break;
+//					case 3:
+//						state = MAIN_SCREEN;
+//						DrawMainScreen();
+//						break;
+//					case 4: 
+//						state = option;
+//						if(state == 1){
+//							DrawMainScreen();
+//						}
+//						if(state == 2){
+//							DrawSetTimeScreen();
+//						}
+//						if(state == 3){
+//							DrawSetAlarmScreen();
+//						}
+//						break;		
+//					}
+//				
+//				if(buttonPressed == 1){
+//					option++;
+//					if(option>3){
+//						option = 1;
+//					}
+//					if(option<1){
+//						option = 3;
+//					}
+//					optionsUpArrow();
+//				}
+//				if(buttonPressed == 2){
+//					option--;
+//					if(option>3){
+//						option = 1;
+//					}
+//					if(option<1){
+//						option = 3;
+//					}
+//					optionsDownArrow();
+//				}
+//				if(buttonPressed == 3){
+//					state = MAIN_SCREEN;
+//					DrawMainScreen();
+//				}
+//				if(buttonPressed == 4){
+//					state = option;
+//					if(state == 1){
+//						DrawMainScreen();
+//					}
+//					if(state == 2){
+//						DrawSetTimeScreen();
+//					}
+//					if(state == 3){
+//						DrawSetAlarmScreen();
+//					}
+//				}
+//				break;
+//			case SET_TIME_SCREEN:
+//				switch(buttonPressed){
+//					case 1:
+//						if(hourSet != TRUE){
+//							IncrementHour();
+//						} else {
+//							if(firstMinuteSet!=TRUE){
+//								IncrementFirstMinute();
+//							} else {
+//								IncrementSecondMinute();
+//							}
+//						}
+//						break;
+//					case 2: 
+//						if(hourSet != TRUE){
+//							DecrementHour();
+//						} else {
+//							if(firstMinuteSet!=TRUE){
+//								DecrementFirstMinute();
+//							} else {
+//								DecrementSecondMinute();
+//							}
+//						}
+//						break;
+//					case 3: 
+//						state = OPTIONS_SCREEN;
+//						DrawOptionsScreen();
+//						break;
+//					case 4:
+//						if(hourSet != TRUE){
+//							hourSet = TRUE;
+//							UpdateCurrentHour();
+//							MoveTimeArrow();
+//						} else {
+//							if(firstMinuteSet!= TRUE){
+//								firstMinuteSet = TRUE;
+//								UpdateFirstMinute();
+//								MoveTimeArrow();
+//							} else {
+//								UpdateSecondMinute();
+//								state = MAIN_SCREEN;
+//								DrawMainScreen();
+//							}
+//						}
+//						break;
+//					}
+//				break;
+//			case SET_ALARM_SCREEN:
+//				switch(buttonPressed){
+//					case 1:
+//						IncrementAlarmHour();
+//						break;
+//					case 2:
+//						DecrementAlarmHour();
+//						break;
+//					case 3:
+//						state = OPTIONS_SCREEN;
+//						DrawOptionsScreen();
+//						break;
+//					case 4:
+//						UpdateAlarmTime();
+//						state = MAIN_SCREEN;
+//						DrawMainScreen();
+//						break;
+//				}
+//				break;
+////			default:
+////				state = MAIN_SCREEN;
+////				DrawMainScreen();
+//		}
 	}
 }
 
@@ -218,7 +299,11 @@ void optionsUpArrow(void){
 }
 void IncrementHour(void){}
 void DecrementHour(void){}
-void UpdateCurrentTime(void){}
+void UpdateCurrentHour(void){}
+void IncrementFirstMinute(void){}
+void IncrementSecondtMinute(void){}
+void DecrementFirstMinute(void){}
+void DecrementSecondtMinute(void){}
 void IncrementAlarmHour(void){}
 void DecrementAlarmHour(void){}
 void UpdateAlarmTime(void){}
