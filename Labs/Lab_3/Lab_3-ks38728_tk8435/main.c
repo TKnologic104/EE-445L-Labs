@@ -52,7 +52,6 @@ void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
-void PortF_Init(void);
 
 void ST7735_OutNum(char *ptr);
 
@@ -61,19 +60,13 @@ void ST7735_OutNum(char *ptr);
 /****** Global Variables *******/
 
 int main(void){
-	
   PLL_Init(Bus80MHz);                   // 80 MHz
-
+	//PortD_Init(); //Initialize Speaker
+	Switch_Init();
 	ResetScreenBlack();
-	
-	PortD_Init(); //Initialize Speaker
-	PortF_Init(); //Initialize Switches
-	
-
+	ST7735_OutString("Hey");
 	while(1){
-		DrawClockFace();
+		PF1 = 0x02;
 	}
+
 }
-
-
-

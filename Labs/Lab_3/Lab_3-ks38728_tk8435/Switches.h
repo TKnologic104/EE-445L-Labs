@@ -65,3 +65,5 @@ void Switch_WaitRelease(void);
 unsigned long Switch_Input(void);
 
 void PortF_Init(void);
+
+void PortD_Init(void);
