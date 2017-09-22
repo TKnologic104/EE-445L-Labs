@@ -90,8 +90,8 @@ uint32_t pmfMaxX = 0;
 uint32_t pmfMinY = 0;
 uint32_t pmfMaxY = 0;
 uint32_t pmfMidRangeX = 0;
-uint32_t testCase = 6;
-uint32_t testCount = 5;
+uint32_t testCase = 1;
+uint32_t testCount = 1;
 uint32_t displayTitle = 1;
 
 
@@ -105,23 +105,23 @@ int main(void){
 	Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
 	
 	while(1){	
-//		EnableInterrupts();
-//		while(currIndex < ARR_SIZE){
-//			PF1 ^= 0x02;
-//			if (testCase % 2 == 0){
-//				PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
-//			}
-//		}
+		EnableInterrupts();
+		while(currIndex < ARR_SIZE){
+			PF1 ^= 0x02;
+			if (testCase % 2 == 0){
+				PF1 = (PF1*12345678)/1234567+0x02;  // this line causes jitter
+			}
+		}
 				
 		ResetScreenBlack();
-//		CalculateJitter();
-//		DisplayJitter();
-//	  DelayWait10ms(2000);
+		CalculateJitter();
+		DisplayJitter();
+	  DelayWait10ms(2000);
 
-//		ResetScreenWhite();
-//		CalculatePMF();
-//		DrawPMF();
-//	  DelayWait10ms(1000);
+		ResetScreenWhite();
+		CalculatePMF();
+		DrawPMF();
+	  DelayWait10ms(1000);
 		DetermineTestCase();
 	}
 }
@@ -252,37 +252,34 @@ void DrawPMF(void){
  Outputs: none
 */
 void DetermineTestCase(void){
-	DrawSlantedLine(10);
+	if (testCount >= 1){ //change this value for number of times each test is run.
+			testCount = 1;
+			testCase++;
+			if (testCase > 6) {
+				DrawSlantedLine(10);
 				DrawClockFace();
 				DrawClockFace();
-//	if (testCount >= 1){ //change this value for number of times each test is run.
-//			testCount = 1;
-//			testCase++;
-//			if (testCase > 6) {
-//				DrawSlantedLine(10);
-//				DrawClockFace();
-//				DrawClockFace();
-//				SysTick_Disable();
-//				Timer3A_Disable();
-//				testCase = 1;
-//			}
-//		}
-//		else {
-//			testCount++;
-//		}
-//		
-//	if ((testCase == 1) || (testCase == 2)){
-//		currIndex=0;  // only 1 interrupt timer0 active
-//	}
-//	if ((testCase == 3) || (testCase == 4)){
-//		SysTick_Init(); // 2 interrupts active
-//		SysTick_Wait(7999);
-//		currIndex=0;
-//	}
-//	if ((testCase == 5) || (testCase == 6)){
-//		Timer3A_Init10KHzInt();  // 3 interrupts active
-//		currIndex=0;
-//	}
+				SysTick_Disable();
+				Timer3A_Disable();
+				testCase = 1;
+			}
+		}
+		else {
+			testCount++;
+		}
+		
+	if ((testCase == 1) || (testCase == 2)){
+		currIndex=0;  // only 1 interrupt timer0 active
+	}
+	if ((testCase == 3) || (testCase == 4)){
+		SysTick_Init(); // 2 interrupts active
+		SysTick_Wait(7999);
+		currIndex=0;
+	}
+	if ((testCase == 5) || (testCase == 6)){
+		Timer3A_Init10KHzInt();  // 3 interrupts active
+		currIndex=0;
+	}
 }
 
 /**************Name: ResetScreenBlack***************
