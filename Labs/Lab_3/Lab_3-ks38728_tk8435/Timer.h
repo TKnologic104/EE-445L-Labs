@@ -10,8 +10,6 @@ void Timer0A_Init100HzInt(void);
 
 void Timer0A_Handler(void);
 	
-	
-void (*PeriodicTask)(void);   // user function
 
 // ***************** TIMER1_Init ****************
 // Activate TIMER1 interrupts to run user task periodically

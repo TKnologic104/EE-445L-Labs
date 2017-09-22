@@ -41,6 +41,7 @@ void Switch_Init(void);
 uint32_t GetButtonPressed(void);
 
 uint32_t buttonPressed = 0;
+uint32_t buttons = 0;
 
 //One shot timer interrupt for 10ms
 static void Timer0Arm(void){
@@ -76,7 +77,7 @@ void Switch_Init(void){
   PortF_Init();
 	PortD_Init();
   GPIOArm();
-  //SYSCTL_RCGCTIMER_R |= 0x01;   // 0) activate TIMER0
+  SYSCTL_RCGCTIMER_R |= 0x01;   // 0) activate TIMER0
  }
 
 //void PortF_Init(void){
@@ -131,39 +132,59 @@ void PortD_Init(void){
   while((SYSCTL_PRGPIO_R&0x08)==0){};   // allow time for clock to stabilize
                                     // 2) no need to unlock PD3-0
 //  GPIO_PORTD_AMSEL_R &= ~0x02;      // 3) disable analog functionality on PD3-0
-	GPIO_PORTD_AMSEL_R = 0;       //     disable analog functionality on PF
+	GPIO_PORTD_AMSEL_R = 0;       //     disable analog functionality on PD
   GPIO_PORTD_PCTL_R &= ~0x000000F0; // 4) GPIO
-  GPIO_PORTD_DIR_R &= ~0xF;         // 5) make PD1, PD2, PD3, PD4
+  GPIO_PORTD_DIR_R &= ~0xF;         // 5) make PD0, PD1, PD2, PD3
   GPIO_PORTD_AFSEL_R &= ~0xF;      // 6) regular port function
   GPIO_PORTD_DEN_R |= 0xF;         // 7) enable digital I/O on PD3-0
-	GPIO_PORTD_PUR_R |= 0xF;     //     enable weak pull-up on PF4
+	GPIO_PORTD_PUR_R |= 0xF;     //     enable weak pull-up on PD3-0
 	GPIO_PORTD_IS_R &= ~0xF;     // (d) PF4 is edge-sensitive
 }
 
-// Interrupt on rising or falling edge of PF4 (CCP0)
+// Interrupt on rising or falling edge of PD0-3 (CCP0)
 void GPIOPortD_Handler(void){
   GPIO_PORTD_IM_R &= ~0xF;     // disarm interrupt on PD0-3
-	PF2 = 0x04;
-//	if(GPIO_PORTD_RIS_R&0x01){   // page 213  --  PD0 was pressed
-//		buttonPressed = 1;
-//				PF2 ^= 0x02;
-//	}
-//	if(GPIO_PORTD_RIS_R&0x02){   // page 213  --  PD1 was pressed
-//		buttonPressed = 2;
-//				PF2 ^= 0x02;
+//	PF2 = 0x04;
+	
+	/****try 0*****/
+	if(GPIO_PORTD_RIS_R&0x01){   // page 213  --  PD0 was pressed
+		buttonPressed = 1;
+	}
+	if(GPIO_PORTD_RIS_R&0x02){   // page 213  --  PD1 was pressed
+		buttonPressed = 2;
+	}
+	if(GPIO_PORTD_RIS_R&0x04){   // page 213  --  PF3 was pressed
+		buttonPressed = 3;
+	}
+	if(GPIO_PORTD_RIS_R&0x8){   // page 213  --  PF4 was pressed
+		buttonPressed = 4;
+	}
 
-//	}
-//	if(GPIO_PORTD_RIS_R&0x04){   // page 213  --  PF3 was pressed
-//		buttonPressed = 3;
-//				PF2 ^= 0x02;
+/****try 1***/
+buttons = GPIO_PORTD_DATA_R&0xF;
+	switch(buttons) {
 
-//	}
-//	if(GPIO_PORTD_RIS_R&0x8){   // page 213  --  PF4 was pressed
-//		buttonPressed = 4;
-//				PF2 ^= 0x02;
+   case 0x1  :
+      buttonPressed = 1;
+      break; 
+   case 0x02  :
+      buttonPressed = 2;
+      break; 
+	 case 0x4  :
+      buttonPressed = 3;
+      break; 
+   case 0x08  :
+      buttonPressed = 4;
+      break;
+   default : 
+   buttonPressed = buttonPressed;
+}
 
-//	}
-//  Timer0Arm(); // start one shot
+/***try 2****/
+//	buttonPressed = GPIO_PORTD_DATA_R&0xF;
+	
+	
+  Timer0Arm(); // start one shot
 }
 
 
