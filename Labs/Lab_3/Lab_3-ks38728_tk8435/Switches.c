@@ -26,6 +26,10 @@
 // PF4 connected to a negative logic switch using internal pull-up (trigger on both edges)
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
+
+//TK - test
+#include "Speaker.h"
+//
 #define PF1                     (*((volatile uint32_t *)0x40025008))
 #define PF2                     (*((volatile uint32_t *)0x40025010))
 #define PF3                     (*((volatile uint32_t *)0x40025020))
@@ -63,7 +67,7 @@ static void Timer0Arm(void){
 //Arm interrupt on PD(0-3)
 static void GPIOArm(void){
   GPIO_PORTD_ICR_R = 0xF;      // (e) clear flag4
-  GPIO_PORTD_IM_R |= 0xF;      // (f) arm interrupt on PE4, PE3, PE1, PE0 *** No IME bit as mentioned in Book ***
+  GPIO_PORTD_IM_R |= 0xF;      // (f) arm interrupt on PD0-PD3 *** No IME bit as mentioned in Book ***
   NVIC_PRI0_R = (NVIC_PRI0_R&0x00FFFFFF)|0xA0000000; // (g) priority 5
 	NVIC_EN0_R |= 0x00000008;      // (h) enable interrupt 30 in NVIC
 }
@@ -145,40 +149,48 @@ void PortD_Init(void){
 void GPIOPortD_Handler(void){
   GPIO_PORTD_IM_R &= ~0xF;     // disarm interrupt on PD0-3
 //	PF2 = 0x04;
-	
-	/****try 0*****/
+//	
+//	/****try 0*****/
 	if(GPIO_PORTD_RIS_R&0x01){   // page 213  --  PD0 was pressed
+		PF2 ^= 0x04;
 		buttonPressed = 1;
-	}
+		StartAlarm();
+	} 
 	if(GPIO_PORTD_RIS_R&0x02){   // page 213  --  PD1 was pressed
+		PF2 ^= 0x04;
 		buttonPressed = 2;
+		StopAlarm();
 	}
 	if(GPIO_PORTD_RIS_R&0x04){   // page 213  --  PF3 was pressed
+		PF2 ^= 0x04;
 		buttonPressed = 3;
 	}
 	if(GPIO_PORTD_RIS_R&0x8){   // page 213  --  PF4 was pressed
+		PF2 ^= 0x04;
 		buttonPressed = 4;
 	}
 
 /****try 1***/
-buttons = GPIO_PORTD_DATA_R&0xF;
-	switch(buttons) {
+//buttons = GPIO_PORTD_DATA_R&0xF;
+//	switch(buttons) {
 
-   case 0x1  :
-      buttonPressed = 1;
-      break; 
-   case 0x02  :
-      buttonPressed = 2;
-      break; 
-	 case 0x4  :
-      buttonPressed = 3;
-      break; 
-   case 0x08  :
-      buttonPressed = 4;
-      break;
-   default : 
-   buttonPressed = buttonPressed;
-}
+//   case 0x1  :
+//		 	PF2 = 0x04;
+//      buttonPressed = 1;
+//      break; 
+//   case 0x02  :
+//			PF1 = 0x02;
+//      buttonPressed = 2;
+//      break; 
+//	 case 0x4  :
+//      buttonPressed = 3;
+//      break; 
+//   case 0x08  :
+//      buttonPressed = 4;
+//      break;
+//   default : 
+//   buttonPressed = buttonPressed;
+//}
 
 /***try 2****/
 //	buttonPressed = GPIO_PORTD_DATA_R&0xF;
