@@ -42,6 +42,23 @@
 
 #define SCREEN_WIDTH 128
 
+uint32_t currentMinute;
+uint32_t currentHour;
+uint32_t alarmMinute;
+uint32_t alarmHour;
+uint32_t screenMinute;
+uint32_t screenHour;
+uint32_t cursorCol;
+uint32_t cursorRow;
+uint32_t alarmON;
+uint32_t timeChanged;
+
+
+enum State {MAIN_SCREEN = 0, OPTIONS_SCREEN = 1, SET_TIME_SCREEN = 2, SET_ALARM_SCREEN = 3, ON_OFF_ALARM_SCREEN = 4};
+enum State CurrState;
+
+enum Button {NONE = 0, UP = 1, DOWN = 2, BACK = 3, SET = 4, OFF = 5};
+enum Button BtnPressed;
 /**** Function Declaration ****/
 
 void DisableInterrupts(void); // Disable interrupts
@@ -50,45 +67,39 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-void ST7735_OutNum(char *ptr);
-
-
-
-/****** Global Variables *******/
-uint32_t currentMinute = 0;
-uint32_t currentHour = 0;
-
-
+void DrawScreen(uint32_t currentHour, uint32_t currentMinute);
 
 int main(void){
 	
   PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
 	
-	Timer0A_Init30sec();               // set up Timer0A for 30seconds
-	//Timer1_Init();												// System Clock timer
-	PortD_Init(); //Initialize Speaker
-	PortF_Init(); //Initialize Switches
+	//Switch_Init();  //karime's code
 	
-	DrawBackground();
-	DrawMinuteHand(0);
-	DrawHourHand(0,0);
-	
+	Timer1A_Init30sec();               // set up Timer1A for 30seconds
+
+	//change speaker to timer 2
+	InitScreen();
+
 	while(1){
 		EnableInterrupts();
-		if (checkMinute() == 1){
-			currentMinute++;
-			if (currentMinute > 59){
-				currentMinute = 0;
-				currentHour++;
-				if (currentHour > 11){
-					currentHour = 0;
-				}
+		if (BtnPressed == NONE && CurrState == MAIN_SCREEN){ //BtnPrssed == None so that is continues to draw the main. when is isnt none is should continue to draw another screen
+			if (timeChanged == 1){
+				timeChanged = 0;
+				DrawScreen(currentHour, currentMinute);
 			}
-			DrawMinuteHand(currentMinute);
-			DrawHourHand(currentHour, currentMinute);
+		} 
+		else {
+			DrawScreen(currentHour, currentMinute);
+			if (checkIdle()){ // this line says every 15mins the code will send you back to the main_screen
+				//BtnPressed = SET;
+				CurrState = MAIN_SCREEN;
+				DrawScreen(currentHour, currentMinute);
+			}
 		}
 	}
 }
 
+//TODO: Check Alarm - if (alarmON == 1 && currentHour == alarmHour && currentMinute == alaramMinute){
+													// activite speaker
 

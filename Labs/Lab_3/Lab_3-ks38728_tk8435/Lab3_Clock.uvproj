@@ -383,7 +383,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>0</umfTarg>
+            <umfTarg>1</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
@@ -392,7 +392,7 @@
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>ADCSWTrigger.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -464,6 +464,21 @@
               <FileName>LCD.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LCD.h</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>Switches.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Switches.h</FilePath>
+            </File>
+            <File>
+              <FileName>Speaker.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Speaker.h</FilePath>
             </File>
           </Files>
         </Group>

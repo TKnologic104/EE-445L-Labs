@@ -192,6 +192,10 @@ void DisplayJitter(void){
 	ST7735_SetCursor(1,4);
 	ST7735_OutString("jitter = ");
 	ST7735_OutUDec(jitter);
+	output = "ADC = ";
+	ST7735_SetCursor(1,5);
+	ST7735_OutString(output);
+	ST7735_OutUDec(ADCvalue);
 }
 
 /**************Name: CalculatePMF***************
@@ -453,7 +457,7 @@ void SysTick_Wait10ms(uint32_t delay){
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
 void Timer0A_Init100HzInt(void){
   volatile uint32_t delay;
-  DisableInterrupts();
+  //DisableInterrupts();
   // **** general initialization ****
   SYSCTL_RCGCTIMER_R |= 0x01;      // activate timer0
   delay = SYSCTL_RCGCTIMER_R;      // allow time to finish activating

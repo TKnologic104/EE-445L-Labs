@@ -1,5 +1,8 @@
 #include <stdint.h>
 
+/****** Global Variables *******/
+
+
 /**************Name: ResetScreenBlack***************
  Author: Karime Saad, Tarang Khandpur
  Description: Clears the screen to all Black.
@@ -54,6 +57,17 @@ void DrawMinuteHand(uint32_t minute);
 
 void ResetScreenBackground(uint16_t BackgroundColor);
 
-void DrawBackground(void);
 
 void DrawHourHand(uint32_t hour, uint32_t minute);
+
+void DrawClockBkgd(void);
+
+void DrawDigitalDisplay(uint32_t hour, uint32_t minute);
+
+void DrawScreen(uint32_t hour, uint32_t minute); 
+
+void DrawMainScreen(uint32_t hour, uint32_t minute);
+
+void InitScreen(void);
+
+

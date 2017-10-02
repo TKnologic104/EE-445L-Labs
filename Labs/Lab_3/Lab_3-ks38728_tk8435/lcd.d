@@ -9,3 +9,5 @@
 .\lcd.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
 .\lcd.o: Title.h
 .\lcd.o: C:\Keil\ARM\ARMCC\bin\..\include\math.h
+.\lcd.o: Switches.h
+.\lcd.o: LCD.h
