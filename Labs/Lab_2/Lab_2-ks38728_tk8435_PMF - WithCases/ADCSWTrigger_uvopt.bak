@@ -315,7 +315,11 @@
       <Focus>0</Focus>
       <ColumnNumber>16</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
+<<<<<<< HEAD
       <TopLine>279</TopLine>
+=======
+      <TopLine>278</TopLine>
+>>>>>>> 72a0e10a274e2e923d69801230e0b6af9000521a
       <CurrentLine>283</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup.s</PathWithFileName>
@@ -329,9 +333,13 @@
       <FileType>1</FileType>
       <tvExp>1</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2</ColumnNumber>
+      <ColumnNumber>4</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
+<<<<<<< HEAD
       <TopLine>78</TopLine>
+=======
+      <TopLine>76</TopLine>
+>>>>>>> 72a0e10a274e2e923d69801230e0b6af9000521a
       <CurrentLine>84</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\ADCSWTrigger.c</PathWithFileName>
@@ -361,9 +369,15 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
+<<<<<<< HEAD
       <ColumnNumber>8</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1645</TopLine>
+=======
+      <ColumnNumber>4</ColumnNumber>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <TopLine>1644</TopLine>
+>>>>>>> 72a0e10a274e2e923d69801230e0b6af9000521a
       <CurrentLine>1651</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\ST7735.c</PathWithFileName>
@@ -411,8 +425,13 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
+<<<<<<< HEAD
       <TopLine>144</TopLine>
       <CurrentLine>254</CurrentLine>
+=======
+      <TopLine>103</TopLine>
+      <CurrentLine>116</CurrentLine>
+>>>>>>> 72a0e10a274e2e923d69801230e0b6af9000521a
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
