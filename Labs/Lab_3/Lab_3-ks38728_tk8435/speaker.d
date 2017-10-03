@@ -1,0 +1,1 @@
+.\speaker.o: Speaker.c

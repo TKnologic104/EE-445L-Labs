@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 --cpu Cortex-M4
 ".\startup.o"
 ".\adcswtrigger.o"
@@ -12,4 +13,20 @@
 --library_type=microlib --strict --scatter "ADCSWTrigger.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
+=======
+--cpu Cortex-M4
+".\startup.o"
+".\adcswtrigger.o"
+".\pll.o"
+".\st7735.o"
+".\main.o"
+".\title.o"
+".\lcd.o"
+".\speaker.o"
+".\timer.o"
+".\switches.o"
+--library_type=microlib --strict --scatter "ADCSWTrigger.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+>>>>>>> Tarang
 --list ".\ADCSWTrigger.map" -o .\ADCSWTrigger.axf
